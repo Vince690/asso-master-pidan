@@ -9,7 +9,7 @@ export const seedSettings: SiteSettings = {
   instagram: "https://www.instagram.com/m2pidan/",
   x: "https://x.com/m2pidan",
   tagline: "Le master qui pense le droit à l'ère numérique.",
-  github: "",
+  github: "https://github.com/Vince690/asso-master-pidan",
   statutsHtml: "",
 };
 

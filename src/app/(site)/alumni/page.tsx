@@ -25,12 +25,12 @@ export default async function AlumniPage({ searchParams }: PageProps<"/alumni">)
         lead="Filtrez par métier, cherchez un nom ou une structure. Vous êtes passé par PIDAN ? Faites-vous ajouter."
       >
         <div className="animate-rise mt-2 [animation-delay:180ms]">
-          <LinkButton href="/contact?sujet=Figurer dans l'annuaire alumni" variant="glass">
+          <LinkButton href="/contact?sujet=alumni" variant="glass">
             Figurer dans l'annuaire
           </LinkButton>
         </div>
       </PageHero>
-      <Section className="pt-0">
+      <Section className="pt-0 md:pt-0">
         <Suspense fallback={<AlumniExplorer alumni={alumni} />}>
           <WithFilter alumni={alumni} searchParams={searchParams} />
         </Suspense>

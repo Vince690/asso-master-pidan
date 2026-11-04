@@ -13,12 +13,24 @@ const SUBJECTS = [
   "Presse et communication",
 ];
 
+const ALIASES: Record<string, string> = {
+  partenariat: SUBJECTS[1],
+  alumni: SUBJECTS[2],
+  candidature: SUBJECTS[3],
+  presse: SUBJECTS[4],
+};
+
+export function resolveSubject(value?: string): string {
+  if (!value) return SUBJECTS[0];
+  return ALIASES[value] ?? (SUBJECTS.includes(value) ? value : SUBJECTS[0]);
+}
+
 /**
  * Prépare un email dans la messagerie du visiteur (sujet et message pré-remplis).
  * Rien n'est stocké sur le site : aucune donnée personnelle collectée.
  */
 export default function MailComposer({ to, defaultSubject }: { to: string; defaultSubject?: string }) {
-  const [subject, setSubject] = useState(SUBJECTS.includes(defaultSubject ?? "") ? defaultSubject! : SUBJECTS[0]);
+  const [subject, setSubject] = useState(resolveSubject(defaultSubject));
   const [message, setMessage] = useState("");
   const href = `mailto:${to}?subject=${encodeURIComponent(`[PID@N] ${subject}`)}${message ? `&body=${encodeURIComponent(message)}` : ""}`;
 

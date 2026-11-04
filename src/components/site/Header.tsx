@@ -2,17 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LogoMark, Wordmark } from "./Logo";
 import SmartLink from "./SmartLink";
 
-/**
- * Les entrées pointent vers les sections de l'accueil.
- * `pages` liste les chemins pour lesquels l'entrée reste active hors de l'accueil.
- */
 export const NAV = [
   { id: "master", href: "/#master", label: "Le master", pages: ["/le-master"] },
   { id: "articles", href: "/#articles", label: "Articles", pages: ["/articles"] },
@@ -22,29 +18,26 @@ export const NAV = [
 ] as const;
 
 const SECTION_IDS = ["hero", ...NAV.map((n) => n.id), "contact"];
+const EASE = [0.22, 0.61, 0.36, 1] as const;
 
 /**
  * Navigation en pilule flottante.
- * Au repos elle est contractée ; au survol elle s'ouvre franchement et un surligneur glisse
- * d'un item à l'autre, uniquement sous l'item survolé. Sur l'accueil, l'item actif suit la section visible.
- * Sur mobile, elle s'ouvre en feuille de verre.
+ * - La pilule s'agrandit légèrement au survol (transition sans rebond).
+ * - Chaque entrée a une zone de survol qui occupe toute la hauteur de la barre : le surligneur
+ *   se place dès que le curseur est au-dessus ou en dessous du texte, pas seulement sur la pilule.
+ * - Le surligneur glisse d'un item à l'autre et apparaît en fondu, jamais en rebond.
+ * - Sur l'accueil, l'item actif suit la section visible ; arrivé sur Contact, le bouton s'illumine.
  */
 export default function Header() {
   const pathname = usePathname();
-  const [hovered, setHovered] = useState<string | null>(null); // id d'item, "cta", ou null
+  const [hovered, setHovered] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const [section, setSection] = useState<string>("hero");
+  const [shine, setShine] = useState(0);
   const [openPath, setOpenPath] = useState<string | null>(null);
+  const lastSection = useRef("hero");
   const open = openPath === pathname;
   const onHome = pathname === "/";
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     if (!onHome) return;
@@ -63,7 +56,11 @@ export default function Header() {
             best = el.id;
           }
         }
-        if (bestRatio > 0) setSection(best);
+        if (bestRatio > 0 && best !== lastSection.current) {
+          lastSection.current = best;
+          setSection(best);
+          if (best === "contact") setShine((n) => n + 1);
+        }
       },
       { rootMargin: "-35% 0px -50% 0px", threshold: [0, 0.1, 0.25, 0.5, 0.75, 1] },
     );
@@ -80,7 +77,6 @@ export default function Header() {
 
   const isActive = (item: (typeof NAV)[number]) =>
     onHome ? section === item.id : item.pages.some((p) => pathname === p || pathname.startsWith(`${p}/`));
-  // Surligneur : l'item survolé seul ; rien si le curseur est sur le bouton de contact ; sinon l'item actif.
   const highlight = hovered === "cta" ? null : (hovered ?? NAV.find(isActive)?.id ?? null);
   const sectionHref = (id: string) => (onHome ? `#${id}` : `/#${id}`);
 
@@ -94,26 +90,30 @@ export default function Header() {
             setExpanded(false);
             setHovered(null);
           }}
-          animate={{ scale: expanded ? 1.06 : 0.94, opacity: expanded || scrolled ? 1 : 0.94 }}
-          transition={{ type: "spring", stiffness: 240, damping: 24 }}
+          initial={false}
+          animate={{ scale: expanded ? 1.05 : 1 }}
+          transition={{ duration: 0.32, ease: EASE }}
           style={{ transformOrigin: "50% 0%", willChange: "transform" }}
-          className="header-glass glass-edge pointer-events-auto flex items-center gap-1 rounded-full p-1.5 pl-3.5"
+          className="header-glass glass-edge pointer-events-auto flex items-stretch gap-1 rounded-full px-1.5 py-1.5"
         >
-          <Link href="/" className="mr-2 flex items-center gap-2.5 pr-1" aria-label="PID@N, accueil">
+          <Link href="/" className="mr-2 flex items-center gap-2.5 pl-2 pr-1 outline-none" aria-label="PID@N, accueil">
             <LogoMark size={34} />
             <Wordmark className="text-[1.02rem]" />
           </Link>
 
-          <ul className="hidden items-center md:flex">
+          <ul className="hidden items-stretch md:flex">
             {NAV.map((item) => {
               const active = isActive(item);
               return (
-                <li key={item.id} className="relative">
+                <li key={item.id} className="relative flex items-stretch">
                   {highlight === item.id && (
                     <motion.span
                       layoutId="nav-highlight"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ layout: { duration: 0.22, ease: EASE }, opacity: { duration: 0.16 } }}
                       className="absolute inset-0 rounded-full bg-white/12"
-                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
                     />
                   )}
                   <SmartLink
@@ -122,7 +122,8 @@ export default function Header() {
                     onMouseLeave={() => setHovered((h) => (h === item.id ? null : h))}
                     aria-current={active ? "location" : undefined}
                     className={cn(
-                      "relative z-10 block rounded-full px-4 py-2 text-[0.9rem] font-medium transition-colors duration-200 outline-none",
+                      // la zone de survol déborde en haut et en bas pour couvrir toute la hauteur de la barre
+                      "relative z-10 flex items-center rounded-full px-4 text-[0.9rem] font-medium outline-none transition-colors duration-150 after:absolute after:inset-x-0 after:-inset-y-2.5 after:content-['']",
                       active ? "text-fg" : "text-fg-muted hover:text-fg",
                     )}
                   >
@@ -137,8 +138,9 @@ export default function Header() {
             href={sectionHref("contact")}
             onMouseEnter={() => setHovered("cta")}
             onMouseLeave={() => setHovered((h) => (h === "cta" ? null : h))}
-            className="cta-shine group relative ml-1 hidden items-center gap-2 overflow-hidden rounded-full bg-fg px-4.5 py-2 text-[0.9rem] font-semibold text-ink-0 outline-none md:inline-flex"
+            className="cta-shine relative ml-1 hidden items-center overflow-hidden rounded-full bg-fg px-4.5 py-2 text-[0.9rem] font-semibold text-ink-0 outline-none after:absolute after:inset-x-0 after:-inset-y-2.5 after:content-[''] md:inline-flex"
           >
+            <span key={shine} className={cn("cta-ray", shine > 0 && "run")} aria-hidden />
             <span className="relative">Nous contacter</span>
           </SmartLink>
 
@@ -147,7 +149,7 @@ export default function Header() {
             onClick={() => setOpenPath(open ? null : pathname)}
             aria-expanded={open}
             aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
-            className="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-fg md:hidden"
+            className="ml-1 inline-flex h-9 w-9 items-center justify-center self-center rounded-full text-fg md:hidden"
           >
             {open ? <X size={18} /> : <Menu size={18} />}
           </button>
@@ -167,7 +169,7 @@ export default function Header() {
               initial={{ y: -16, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -16, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ duration: 0.25, ease: EASE }}
               onClick={(e) => e.stopPropagation()}
               className="header-glass glass-edge mx-4 mt-[calc(var(--header-h)+max(1rem,env(safe-area-inset-top,0px)))] rounded-3xl p-3"
             >

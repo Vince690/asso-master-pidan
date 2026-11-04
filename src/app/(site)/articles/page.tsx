@@ -28,7 +28,7 @@ export default function ArticlesPage({ searchParams }: PageProps<"/articles">) {
         title="Veille juridique, vie du master, événements."
         lead="Ce que la promotion lit, écrit et organise. Les analyses sont signées par le pôle Veille juridique ; le reste, par celles et ceux qui l'ont vécu."
       />
-      <Section className="pt-0">
+      <Section className="pt-0 md:pt-0">
         <Suspense fallback={<ListSkeleton />}>
           <List searchParams={searchParams} />
         </Suspense>

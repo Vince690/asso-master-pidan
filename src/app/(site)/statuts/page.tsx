@@ -14,7 +14,7 @@ export default async function StatutsPage() {
   return (
     <>
       <PageHero eyebrow="Association PID@N" title="Statuts de l'association." />
-      <Section className="pt-0">
+      <Section className="pt-0 md:pt-0">
         {html ? (
           <div className="prose-pidan" dangerouslySetInnerHTML={{ __html: html }} />
         ) : (

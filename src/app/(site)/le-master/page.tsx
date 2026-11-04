@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { ArrowUpRight, MapPin } from "lucide-react";
-import { Linkedin } from "@/components/ui/Icons";
 import { CURRICULUM, MASTER } from "@/lib/master";
 import { getMembers } from "@/lib/data";
+import DirectorCard from "@/components/site/DirectorCard";
 import { PageHero, Section, SectionHeading } from "@/components/ui/Section";
 import { LinkButton } from "@/components/ui/Button";
 import { SITE_URL } from "@/lib/site";
@@ -16,14 +16,6 @@ export const metadata: Metadata = {
 
 export default async function MasterPage() {
   const direction = (await getMembers()).find((m) => m.pole === "direction");
-  const director = direction
-    ? {
-        name: `${direction.firstName} ${direction.lastName}`,
-        title: direction.role ?? MASTER.director.title,
-        detail: direction.bio ?? MASTER.director.detail,
-        linkedin: direction.linkedin ?? MASTER.director.linkedin,
-      }
-    : MASTER.director;
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",
@@ -64,7 +56,7 @@ export default async function MasterPage() {
       </PageHero>
 
       {/* Objectifs */}
-      <Section className="pt-4">
+      <Section className="pt-2 md:pt-4">
         <div className="grid gap-4 md:grid-cols-3">
           {[
             {
@@ -143,40 +135,11 @@ export default async function MasterPage() {
       </Section>
 
       {/* Direction */}
-      <Section id="direction">
-        <SectionHeading eyebrow="Direction" title="Une directrice, un laboratoire." />
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="glass glass-edge rounded-3xl p-7">
-            <p className="text-xl font-semibold tracking-tight text-fg">{director.name}</p>
-            <p className="mt-1 font-mono text-xs text-electric-300">Professeure de droit privé, {director.title.toLowerCase()}</p>
-            <p className="mt-4 text-[0.95rem] leading-relaxed text-fg-muted">{director.detail}</p>
-            <a
-              href={director.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-electric-300 hover:text-electric-200"
-            >
-              <Linkedin size={14} /> Profil LinkedIn
-            </a>
-          </div>
-          <div className="glass glass-edge rounded-3xl p-7">
-            <p className="text-xl font-semibold tracking-tight text-fg">{MASTER.lab.name}</p>
-            <p className="mt-1 font-mono text-xs text-electric-300">{MASTER.lab.full}</p>
-            <p className="mt-4 text-[0.95rem] leading-relaxed text-fg-muted">
-              Les étudiants du master sont associés à l'axe « {MASTER.lab.axis} », participent aux déjeuners du laboratoire et au Concours
-              national de plaidoirie en propriété intellectuelle, dont le DANTE est partenaire.
-            </p>
-            <a
-              href={MASTER.links.dante}
-              target="_blank"
-              rel="noreferrer"
-              className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-electric-300 hover:text-electric-200"
-            >
-              Site du laboratoire <ArrowUpRight size={14} />
-            </a>
-          </div>
-        </div>
-      </Section>
+      {direction && (
+        <Section id="direction">
+          <DirectorCard member={direction} />
+        </Section>
+      )}
 
       {/* Lieu */}
       <Section className="pb-4">

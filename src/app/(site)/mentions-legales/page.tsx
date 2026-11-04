@@ -11,7 +11,7 @@ export default function LegalPage() {
   return (
     <>
       <PageHero eyebrow="Informations" title="Mentions légales." />
-      <Section className="pt-0">
+      <Section className="pt-0 md:pt-0">
         <div className="prose-pidan">
           <h2>Éditeur</h2>
           <p>

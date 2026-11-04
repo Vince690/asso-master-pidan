@@ -22,7 +22,7 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
         title="Écrivez-nous."
         lead="Partenariat, intervention, annuaire alumni ou simple question : un email suffit."
       />
-      <Section className="pt-0">
+      <Section className="pt-0 md:pt-0">
         <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-16">
           <aside className="flex flex-col gap-8">
             <div>
@@ -77,5 +77,6 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
 
 async function FormWithSubject({ searchParams, to }: Pick<PageProps<"/contact">, "searchParams"> & { to: string }) {
   const { sujet } = await searchParams;
-  return <MailComposer to={to} defaultSubject={typeof sujet === "string" ? sujet : undefined} />;
+  const subject = typeof sujet === "string" ? sujet : undefined;
+  return <MailComposer key={subject ?? ""} to={to} defaultSubject={subject} />;
 }

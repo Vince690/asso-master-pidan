@@ -319,15 +319,15 @@ body {
     transform: translateX(120%);
   }
 }
-.cta-shine::after {
-  content: "";
+.cta-ray {
   position: absolute;
   inset: 0;
   transform: translateX(-120%);
   background: linear-gradient(90deg, transparent, rgb(155 182 255 / 0.55), transparent);
   pointer-events: none;
 }
-.cta-shine:hover::after {
+.cta-shine:hover .cta-ray,
+.cta-ray.run {
   animation: shine 0.7s ease-out both;
 }
 

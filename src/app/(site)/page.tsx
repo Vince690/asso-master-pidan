@@ -10,6 +10,7 @@ import { buttonClass, LinkButton } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import ArticleCard from "@/components/site/ArticleCard";
 import MemberCard from "@/components/site/MemberCard";
+import DirectorCard from "@/components/site/DirectorCard";
 import MailComposer from "@/components/site/MailComposer";
 
 const THEMES = [
@@ -98,8 +99,8 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
 
       {/* ---- Hero ---- */}
-      <header id="hero" className="container-site relative flex min-h-svh flex-col pt-28 pb-6 md:pt-32">
-        <div className="max-w-4xl pt-6 pb-10 md:pt-10">
+      <header id="hero" className="container-site relative flex min-h-svh flex-col pt-24 pb-6 md:pt-28">
+        <div className="max-w-4xl pt-2 pb-10 md:pt-4">
           <p className="eyebrow animate-rise mb-6">M2 PIDAN · {MASTER.university} · Guyancourt</p>
           <h1 className="display animate-rise text-[2.7rem] [animation-delay:80ms] sm:text-[3.4rem] md:text-[4.6rem]">
             Le master du droit du numérique
@@ -166,6 +167,11 @@ export default async function HomePage() {
             </div>
           ))}
         </div>
+        {direction && (
+          <div className="mt-4">
+            <DirectorCard member={direction} compact />
+          </div>
+        )}
       </Section>
 
       {/* ---- Articles ---- */}
@@ -199,11 +205,6 @@ export default async function HomePage() {
           />
           <MoreLink href="/association">Bureau et pôles de l'association</MoreLink>
         </div>
-        {direction && (
-          <div className="mb-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <MemberCard member={direction} compact />
-          </div>
-        )}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {promo.map((m) => (
             <MemberCard key={m.id} member={m} compact subtitle={false} />
@@ -251,7 +252,7 @@ export default async function HomePage() {
         <Section id="partenaires">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-6">
             <SectionHeading className="mb-0" eyebrow="Partenaires" title="Ils nous accueillent, nous forment, nous accréditent." />
-            <MoreLink href="/partenaires">Devenir partenaire</MoreLink>
+            <MoreLink href="/contact?sujet=partenariat">Devenir partenaire</MoreLink>
           </div>
           <ul className="flex flex-wrap gap-3">
             {partners.map((p) => (
