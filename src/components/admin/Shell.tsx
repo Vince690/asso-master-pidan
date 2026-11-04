@@ -37,7 +37,7 @@ export function Badge({ children, tone = "neutral" }: { children: ReactNode; ton
     warn: "border-amber-500/40 bg-amber-500/10 text-amber-200",
     info: "border-electric-500/40 bg-electric-500/10 text-electric-200",
   };
-  return <span className={cn("inline-flex rounded-full border px-2 py-0.5 font-mono text-[0.65rem]", tones[tone])}>{children}</span>;
+  return <span className={cn("inline-flex whitespace-nowrap rounded-full border px-2 py-0.5 font-mono text-[0.65rem]", tones[tone])}>{children}</span>;
 }
 
 export function Skeleton() {

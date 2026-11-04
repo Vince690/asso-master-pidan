@@ -32,7 +32,7 @@ export default async function MembersPage() {
       <Section className="pt-0 md:pt-0">
         {direction && (
           <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            <MemberCard member={direction} />
+            <MemberCard member={direction} compact />
           </div>
         )}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
