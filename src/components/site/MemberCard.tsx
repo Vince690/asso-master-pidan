@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Linkedin } from "@/components/ui/Icons";
 import type { Member } from "@/lib/types";
-import { memberSlug } from "@/lib/utils";
+import { cn, memberSlug } from "@/lib/utils";
 import Avatar from "@/components/ui/Avatar";
 
 /**
@@ -21,7 +21,7 @@ export default function MemberCard({
   const sub =
     member.role ?? (member.currentPosition ? [member.currentPosition, member.currentCompany].filter(Boolean).join(", ") : undefined);
   return (
-    <div className="group relative">
+    <div className="group relative min-w-0">
       <div className="glass glass-edge flex items-center gap-4 rounded-2xl p-4 transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow-glow-plum)]">
         <Avatar firstName={member.firstName} lastName={member.lastName} photo={member.photo} size={compact ? 44 : 56} />
         <div className="min-w-0 flex-1">
@@ -47,5 +47,66 @@ export default function MemberCard({
         )}
       </div>
     </div>
+  );
+}
+
+/** Ligne de liste (mobile) : portrait, nom, sous-titre éventuel, LinkedIn. */
+export function MemberRow({ member, subtitle = true }: { member: Member; subtitle?: boolean }) {
+  const name = `${member.firstName} ${member.lastName}`;
+  const sub =
+    member.role ?? (member.currentPosition ? [member.currentPosition, member.currentCompany].filter(Boolean).join(", ") : undefined);
+  return (
+    <div className="group relative flex min-w-0 items-center gap-3 px-4 py-2.5">
+      <Avatar firstName={member.firstName} lastName={member.lastName} photo={member.photo} size={36} />
+      <div className="min-w-0 flex-1">
+        <Link href={`/membres/${memberSlug(member)}`} className="block truncate text-[0.95rem] font-medium text-fg after:absolute after:inset-0">
+          {name}
+        </Link>
+        {subtitle && sub && <p className="truncate text-xs text-fg-muted">{sub}</p>}
+      </div>
+      {member.linkedin && (
+        <a
+          href={member.linkedin}
+          target="_blank"
+          rel="noreferrer"
+          aria-label={`LinkedIn de ${name}`}
+          className="relative z-10 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-fg-dim"
+        >
+          <Linkedin size={15} />
+        </a>
+      )}
+    </div>
+  );
+}
+
+/**
+ * Même liste de personnes, deux rendus : un panneau de lignes sur mobile (compact, une seule
+ * surface de verre), la grille de cartes à partir de md. Les classes de la grille sont celles du
+ * desktop, inchangées.
+ */
+export function MemberList({
+  members,
+  gridClassName,
+  subtitle = true,
+  compact = true,
+}: {
+  members: Member[];
+  gridClassName: string;
+  subtitle?: boolean;
+  compact?: boolean;
+}) {
+  return (
+    <>
+      <div className="glass glass-edge min-w-0 divide-y divide-line rounded-2xl md:hidden">
+        {members.map((m) => (
+          <MemberRow key={m.id} member={m} subtitle={subtitle} />
+        ))}
+      </div>
+      <div className={cn("hidden min-w-0 md:grid", gridClassName)}>
+        {members.map((m) => (
+          <MemberCard key={m.id} member={m} compact={compact} subtitle={subtitle} />
+        ))}
+      </div>
+    </>
   );
 }

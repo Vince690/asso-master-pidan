@@ -40,10 +40,10 @@ async function getYear() {
 export default async function Footer({ settings }: { settings: SiteSettings }) {
   const year = await getYear();
   return (
-    <footer className="container-site relative z-10 mt-16 pb-8">
-      <div className="glass glass-edge rounded-[2rem] px-6 py-10 md:px-10 md:py-12">
-        <div className="grid gap-10 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
-          <div className="flex flex-col gap-5">
+    <footer className="container-site relative z-10 mt-16 pb-8 max-md:mt-8 max-md:pb-5">
+      <div className="glass glass-edge rounded-[2rem] px-6 py-10 max-md:rounded-3xl max-md:px-5 max-md:py-8 md:px-10 md:py-12">
+        <div className="grid gap-10 max-md:grid-cols-2 max-md:gap-8 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+          <div className="flex flex-col gap-5 max-md:col-span-2">
             <Logo markSize={34} />
             <p className="max-w-xs text-sm leading-relaxed text-fg-muted">
               Association des étudiants du {MASTER.name}, {MASTER.university}.
@@ -85,7 +85,7 @@ export default async function Footer({ settings }: { settings: SiteSettings }) {
             </div>
           ))}
 
-          <div>
+          <div className="max-md:col-span-2">
             <div className="mb-3 flex items-center gap-3">
               <h3 className="text-sm font-semibold text-fg">Où nous trouver</h3>
               <a

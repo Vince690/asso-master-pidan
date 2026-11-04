@@ -45,7 +45,7 @@ export default function MailComposer({ to, defaultSubject }: { to: string; defau
   const href = `mailto:${to}?subject=${encodeURIComponent(`[PID@N] ${subject}`)}${message ? `&body=${encodeURIComponent(message)}` : ""}`;
 
   return (
-    <div className="glass glass-edge flex flex-col gap-5 rounded-3xl p-6 md:p-8">
+    <div className="glass glass-edge flex flex-col gap-5 rounded-3xl p-6 max-md:p-5 md:p-8">
       <Field label="Sujet">
         <Select id="mail-subject" value={subject} onChange={setSubject} options={SUBJECTS.map((s) => ({ value: s, label: s }))} />
       </Field>
@@ -56,17 +56,20 @@ export default function MailComposer({ to, defaultSubject }: { to: string; defau
         <a href={href} className={buttonClass("electric")}>
           <Mail size={16} /> Ouvrir ma messagerie
         </a>
-        <span className="inline-flex items-center gap-1.5 text-sm text-fg-dim">
-          ou écrivez directement à <span className="text-fg-muted select-all">{to}</span>
-          <button
-            type="button"
-            onClick={copy}
-            aria-label="Copier l'adresse"
-            title={copied ? "Copié" : "Copier l'adresse"}
-            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-fg-dim hover:bg-white/10 hover:text-fg"
-          >
-            {copied ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
-          </button>
+        <span className="inline-flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-fg-dim">
+          <span>ou écrivez directement à</span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span className="text-fg-muted select-all">{to}</span>
+            <button
+              type="button"
+              onClick={copy}
+              aria-label="Copier l'adresse"
+              title={copied ? "Copié" : "Copier l'adresse"}
+              className="inline-flex h-7 w-7 items-center justify-center rounded-full text-fg-dim hover:bg-white/10 hover:text-fg"
+            >
+              {copied ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
+            </button>
+          </span>
         </span>
       </div>
     </div>

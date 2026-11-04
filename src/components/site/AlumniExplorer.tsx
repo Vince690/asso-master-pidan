@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { ALUMNI_FIELDS, type AlumniField, type Member } from "@/lib/types";
 import { cn, promoLabel } from "@/lib/utils";
-import MemberCard from "./MemberCard";
+import { MemberList } from "./MemberCard";
 
 /**
  * Annuaire explorable : filtre par métier, recherche par nom, structure ou poste,
@@ -64,15 +64,9 @@ export default function AlumniExplorer({ alumni, initialField }: { alumni: Membe
         <div className="glass rounded-3xl p-10 text-center text-fg-muted">Personne ne correspond à cette recherche.</div>
       ) : (
         promos.map((promo) => (
-          <section key={promo} className="grid gap-4 md:grid-cols-[11rem_1fr]">
+          <section key={promo} className="grid min-w-0 gap-4 md:grid-cols-[11rem_minmax(0,1fr)]">
             <h2 className="font-mono text-sm text-electric-300">Promotion {promoLabel(promo)}</h2>
-            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              {filtered
-                .filter((m) => m.promo === promo)
-                .map((m) => (
-                  <MemberCard key={m.id} member={m} compact />
-                ))}
-            </div>
+            <MemberList members={filtered.filter((m) => m.promo === promo)} gridClassName="gap-3 sm:grid-cols-2 lg:grid-cols-3" />
           </section>
         ))
       )}

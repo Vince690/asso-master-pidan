@@ -82,7 +82,7 @@ async function Article({ params }: Pick<PageProps<"/articles/[slug]">, "params">
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
-      <article className="container-site pt-36 md:pt-44">
+      <article className="container-site pt-36 max-md:pt-28 md:pt-44">
         <div className="mx-auto max-w-3xl">
           <Link href="/articles" className="inline-flex items-center gap-1.5 text-sm text-fg-muted transition-colors hover:text-fg">
             <ArrowLeft size={15} /> Tous les articles
@@ -92,7 +92,7 @@ async function Article({ params }: Pick<PageProps<"/articles/[slug]">, "params">
               {cat.label}
             </Link>
           </p>
-          <h1 className="mt-4 font-serif text-[2.4rem] leading-[1.08] font-medium tracking-[-0.02em] text-fg text-balance md:text-[3.4rem]">
+          <h1 className="mt-4 font-serif text-[2.4rem] leading-[1.08] font-medium tracking-[-0.02em] text-fg text-balance max-sm:text-[2rem] md:text-[3.4rem]">
             {article.title}
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-fg-muted md:text-xl">{article.excerpt}</p>
@@ -111,7 +111,7 @@ async function Article({ params }: Pick<PageProps<"/articles/[slug]">, "params">
           </div>
         </div>
 
-        <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-3xl border border-line">
+        <div className="mx-auto mt-10 max-w-5xl overflow-hidden rounded-3xl border border-line max-md:mt-8 max-md:rounded-2xl">
           {article.coverImage ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img src={article.coverImage} alt="" className="aspect-[21/9] w-full object-cover" />
@@ -120,7 +120,7 @@ async function Article({ params }: Pick<PageProps<"/articles/[slug]">, "params">
           )}
         </div>
 
-        <div className="mx-auto mt-14 max-w-3xl">
+        <div className="mx-auto mt-14 max-w-3xl max-md:mt-10">
           <div className="prose-pidan" dangerouslySetInnerHTML={{ __html: article.content }} />
           {article.tags.length > 0 && (
             <ul className="mt-12 flex flex-wrap gap-2 border-t border-line pt-8">
@@ -135,7 +135,7 @@ async function Article({ params }: Pick<PageProps<"/articles/[slug]">, "params">
       </article>
 
       {related.length > 0 && (
-        <section className="container-site mt-28">
+        <section className="container-site mt-28 max-md:mt-16">
           <h2 className="mb-8 text-2xl font-semibold tracking-tight text-fg">À lire ensuite</h2>
           <div className="grid gap-5 md:grid-cols-3">
             {related.map((a) => (

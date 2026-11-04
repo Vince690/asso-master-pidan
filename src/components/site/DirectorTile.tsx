@@ -24,7 +24,7 @@ export default function DirectorTile({ member, variant = "tile" }: { member: Mem
             <h3 className="mt-1 truncate text-lg font-semibold tracking-tight text-fg">{name}</h3>
           </div>
         </div>
-        {member.bio && <p className="min-w-0 flex-1 text-sm leading-relaxed text-fg-muted md:line-clamp-2">{member.bio}</p>}
+        {member.bio && <p className="min-w-0 flex-1 text-sm leading-relaxed text-fg-muted line-clamp-2">{member.bio}</p>}
         <div className="flex shrink-0 flex-wrap gap-2">
           {member.linkedin && (
             <a href={member.linkedin} target="_blank" rel="noreferrer" className={buttonClass("glass", "sm")}>

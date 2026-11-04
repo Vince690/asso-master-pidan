@@ -22,13 +22,13 @@ export default function CurriculumTabs({ blocks }: { blocks: Block[] }) {
               aria-selected={semester === s}
               onClick={() => setSemester(s)}
               className={cn(
-                "rounded-full px-5 py-2 text-sm font-medium transition-colors",
+                "rounded-full px-5 py-2 text-sm font-medium transition-colors max-sm:px-4",
                 semester === s ? "bg-fg text-ink-0" : "text-fg-muted hover:text-fg",
               )}
             >
               Semestre {s}
               <span className={cn("ml-2 font-mono text-xs", semester === s ? "text-ink-0/60" : "text-fg-dim")}>
-                {totals[s].ects} ECTS · {totals[s].hours} h
+                {totals[s].ects} ECTS<span className="max-sm:hidden"> · {totals[s].hours} h</span>
               </span>
             </button>
           ))}
@@ -36,7 +36,7 @@ export default function CurriculumTabs({ blocks }: { blocks: Block[] }) {
       </div>
       <div className="grid gap-4 lg:grid-cols-2">
         {shown.map((b) => (
-          <article key={b.id} className="glass glass-edge flex flex-col rounded-3xl p-6 md:p-7">
+          <article key={b.id} className="glass glass-edge flex flex-col rounded-3xl p-6 max-md:rounded-2xl max-md:p-5 md:p-7">
             <header className="flex items-start justify-between gap-4">
               <div>
                 <h4 className="text-[1.15rem] leading-snug font-semibold tracking-tight text-fg text-balance">{b.title}</h4>

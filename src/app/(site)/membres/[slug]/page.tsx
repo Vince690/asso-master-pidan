@@ -51,18 +51,18 @@ async function Sheet({ params }: Pick<PageProps<"/membres/[slug]">, "params">) {
   const back = alumni ? { href: "/alumni", label: "Tous les alumni" } : { href: "/#membres", label: "Toute la promotion" };
 
   return (
-    <div className="container-site pt-32 md:pt-40">
+    <div className="container-site pt-32 max-md:pt-28 md:pt-40">
       <Link href={back.href} className="inline-flex items-center gap-1.5 text-sm text-fg-muted transition-colors hover:text-fg">
         <ArrowLeft size={15} /> {back.label}
       </Link>
-      <article className="glass glass-edge mt-8 grid gap-8 rounded-[2rem] p-8 md:grid-cols-[auto_1fr] md:p-12">
+      <article className="glass glass-edge mt-8 grid gap-8 rounded-[2rem] p-8 max-md:mt-6 max-md:gap-5 max-md:rounded-3xl max-md:p-6 md:grid-cols-[auto_1fr] md:p-12">
         <Avatar firstName={member.firstName} lastName={member.lastName} photo={member.photo} size={120} tone="color" />
         <div className="min-w-0">
           <p className="eyebrow">
             {alumni ? `Alumni · promotion ${promoLabel(member.promo)}` : `Promotion ${promoLabel(member.promo)}`}
             {member.pole ? ` · ${POLES[member.pole].label}` : ""}
           </p>
-          <h1 className="display mt-3 text-[2.2rem] md:text-[3rem]">{name}</h1>
+          <h1 className="display mt-3 text-[2.2rem] max-sm:text-[1.9rem] md:text-[3rem]">{name}</h1>
           {(member.role || member.currentPosition) && (
             <p className="mt-2 text-lg text-fg-muted">
               {member.role ?? [member.currentPosition, member.currentCompany].filter(Boolean).join(", ")}

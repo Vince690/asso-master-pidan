@@ -40,7 +40,7 @@ export default async function PartnersPage() {
             <SectionHeading className="mb-6" title={TYPES[g.type]} />
             <ul className="grid gap-4 md:grid-cols-2">
               {g.list.map((p) => (
-                <li key={p.id} className="glass glass-edge flex flex-col gap-3 rounded-3xl p-7">
+                <li key={p.id} className="glass glass-edge flex flex-col gap-3 rounded-3xl p-7 max-md:rounded-2xl max-md:p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-center gap-4">
                       {p.logo ? (
@@ -74,7 +74,7 @@ export default async function PartnersPage() {
         </Section>
       ))}
       <Section>
-        <div className="glass-strong glass-edge rounded-[2rem] p-8 md:p-12">
+        <div className="glass-strong glass-edge rounded-[2rem] p-8 max-md:rounded-3xl max-md:p-6 md:p-12">
           <h2 className="display text-[1.8rem] md:text-[2.4rem]">Devenir partenaire</h2>
           <p className="mt-4 max-w-xl text-fg-muted">
             Accueillir un cours, intervenir dans le cycle de conférences, proposer des stages ou parrainer un événement : écrivez-nous, on

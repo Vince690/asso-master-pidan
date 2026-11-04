@@ -9,7 +9,7 @@ import { ALUMNI_FIELDS, type AlumniField } from "@/lib/types";
 import { buttonClass, LinkButton } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import ArticleCard from "@/components/site/ArticleCard";
-import MemberCard from "@/components/site/MemberCard";
+import { MemberList } from "@/components/site/MemberCard";
 import DirectorTile from "@/components/site/DirectorTile";
 import MailComposer from "@/components/site/MailComposer";
 
@@ -101,18 +101,18 @@ export default async function HomePage() {
 
       {/* ---- Hero ---- */}
       <header id="hero" className="container-site relative flex min-h-svh flex-col pt-24 pb-6 md:pt-28">
-        <div className="max-w-4xl pt-2 pb-10 md:pt-4">
+        <div className="max-w-4xl pt-2 pb-10 max-md:mx-auto max-md:flex max-md:flex-col max-md:items-center max-md:text-center md:pt-4">
           <p className="eyebrow animate-rise mb-6">M2 PIDAN · {MASTER.university} · Guyancourt</p>
-          <h1 className="display animate-rise text-[2.7rem] [animation-delay:80ms] sm:text-[3.4rem] md:text-[4.6rem]">
+          <h1 className="display animate-rise text-[2.5rem] [animation-delay:80ms] sm:text-[3.4rem] md:text-[4.6rem]">
             Le master du droit du numérique
             <br />
             <span className="text-fg-muted">et de la propriété intellectuelle.</span>
           </h1>
-          <p className="animate-rise mt-7 max-w-2xl text-lg leading-relaxed text-fg-muted [animation-delay:160ms] md:text-xl">
+          <p className="animate-rise mt-6 max-w-2xl text-[1.02rem] leading-relaxed text-fg-muted [animation-delay:160ms] md:mt-7 md:text-xl">
             Master 2 Propriété intellectuelle et droit des affaires numériques, {MASTER.university}. Données personnelles, intelligence
             artificielle, contrats et contentieux, droit d'auteur, marques : une année pour couvrir le droit de l'économie numérique.
           </p>
-          <div className="animate-rise mt-9 flex flex-wrap gap-3 [animation-delay:240ms]">
+          <div className="animate-rise mt-8 flex flex-wrap gap-3 max-sm:w-full max-sm:flex-col [animation-delay:240ms] md:mt-9">
             <a href="#master" className={buttonClass("primary", "lg")}>
               Découvrir le master
               <ArrowRight size={17} />
@@ -123,7 +123,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <dl className="glass glass-edge animate-rise mt-auto grid grid-cols-2 gap-y-5 rounded-3xl px-6 py-5 font-mono text-[0.75rem] text-fg-dim [animation-delay:320ms] sm:grid-cols-5 md:px-8">
+        <dl className="glass glass-edge animate-rise mt-auto grid grid-cols-2 gap-y-4 rounded-3xl px-5 py-4 font-mono text-[0.72rem] text-fg-dim [animation-delay:320ms] sm:grid-cols-5 sm:gap-y-5 sm:px-6 sm:py-5 sm:text-[0.75rem] md:px-8">
           {[
             ["Université", "Paris-Saclay"],
             ["Direction", "Pr V.-L. Benabou"],
@@ -133,7 +133,7 @@ export default async function HomePage() {
           ].map(([k, v]) => (
             <div key={k} className="flex flex-col gap-1">
               <dt>{k}</dt>
-              <dd className="font-sans text-lg font-semibold tracking-tight text-fg">{v}</dd>
+              <dd className="font-sans text-base font-semibold tracking-tight text-fg sm:text-lg">{v}</dd>
             </div>
           ))}
         </dl>
@@ -150,13 +150,13 @@ export default async function HomePage() {
           />
           <MoreLink href="/le-master">Maquette complète</MoreLink>
         </div>
-        <div className="grid gap-4 md:grid-cols-6">
+        <div className="grid gap-4 max-md:gap-3 md:grid-cols-6">
           {THEMES.map((t) => (
             <div key={t.title} className={t.span}>
-              <div className="glass glass-edge flex h-full flex-col gap-3 rounded-3xl p-6">
-                <h3 className="text-xl font-semibold tracking-tight text-fg">{t.title}</h3>
+              <div className="glass glass-edge flex h-full flex-col gap-3 rounded-3xl p-6 max-md:gap-2 max-md:rounded-2xl max-md:p-5">
+                <h3 className="text-xl font-semibold tracking-tight text-fg max-md:text-lg">{t.title}</h3>
                 <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
-                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4">
+                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4 max-md:hidden">
                   {t.codes.map((code) => (
                     <li key={code} className="grid grid-cols-[3.6rem_1fr] items-baseline gap-3 text-[0.82rem] text-fg-muted">
                       <span className="font-mono text-[0.68rem] text-fg-dim">{code}</span>
@@ -206,11 +206,7 @@ export default async function HomePage() {
           />
           <MoreLink href="/association">Bureau et pôles de l'association</MoreLink>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {promo.map((m) => (
-            <MemberCard key={m.id} member={m} compact subtitle={false} />
-          ))}
-        </div>
+        <MemberList members={promo} gridClassName="gap-3 sm:grid-cols-2 lg:grid-cols-4" subtitle={false} />
       </Section>
 
       {/* ---- Alumni ---- */}
@@ -240,11 +236,7 @@ export default async function HomePage() {
               ))}
             </ul>
           )}
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {alumni.map((m) => (
-              <MemberCard key={m.id} member={m} compact />
-            ))}
-          </div>
+          <MemberList members={alumni} gridClassName="gap-3 sm:grid-cols-2 lg:grid-cols-4" />
         </Section>
       )}
 

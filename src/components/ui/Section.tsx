@@ -43,11 +43,11 @@ export function PageHero({
   children?: ReactNode;
 }) {
   return (
-    <header className="container-site relative z-10 pt-28 pb-6 md:pt-32 md:pb-8">
+    <header className="container-site relative z-10 pt-28 pb-6 max-md:pt-24 md:pt-32 md:pb-8">
       <div className="flex max-w-3xl flex-col gap-4">
         {eyebrow && <span className="eyebrow animate-rise">{eyebrow}</span>}
-        <h1 className="display animate-rise text-[2.4rem] [animation-delay:60ms] md:text-[3.6rem]">{title}</h1>
-        {lead && <p className="animate-rise max-w-2xl text-lg leading-relaxed text-fg-muted [animation-delay:120ms] md:text-xl">{lead}</p>}
+        <h1 className="display animate-rise text-[2.4rem] [animation-delay:60ms] max-sm:text-[2.1rem] md:text-[3.6rem]">{title}</h1>
+        {lead && <p className="animate-rise max-w-2xl text-lg leading-relaxed text-fg-muted max-sm:text-base [animation-delay:120ms] md:text-xl">{lead}</p>}
         {children}
       </div>
     </header>
