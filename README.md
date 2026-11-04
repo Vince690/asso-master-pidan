@@ -1,36 +1,65 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PID@N · site de l'association du M2 PIDAN
 
-## Getting Started
+Site vitrine et blog de l'association des étudiants du **Master 2 Propriété intellectuelle et droit des affaires numériques** (Université Paris-Saclay, enseigné à la faculté de droit de l'UVSQ, Guyancourt).
 
-First, run the development server:
+- Présentation du master et maquette complète des cours
+- Articles : veille juridique, vie du master, événements
+- Membres par pôle, annuaire alumni par promotion, partenaires, contact
+- Espace membres pour écrire et publier sans toucher au code
+- SEO soigné : métadonnées, OpenGraph généré, sitemap, robots, JSON-LD
+
+## Démarrer en local (mode démo, zéro configuration)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez <http://localhost:3000>. Sans variable d'environnement, le site tourne en **mode démo** :
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- les données vivent dans `.local-data/db.json` (créé au premier lancement à partir des données d'exemple, ignoré par git) ;
+- l'espace membres (<http://localhost:3000/admin>) se connecte sans mot de passe avec `admin@m2pidan.fr` (administrateur) ou `membre@m2pidan.fr` (membre).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Les noms des membres de démonstration sont fictifs : remplacez-les depuis l'admin.
 
-## Learn More
+## Passer en production (Firebase + Vercel, gratuit)
 
-To learn more about Next.js, take a look at the following resources:
+1. **Firebase** : créez un projet, activez **Firestore** (mode production) et **Authentication** (Google et/ou email + mot de passe). Déployez `firestore.rules` (tout accès client est refusé : seul le serveur écrit).
+2. **Compte de service** : Paramètres du projet → Comptes de service → Générer une clé privée. Copiez le JSON dans `FIREBASE_SERVICE_ACCOUNT` (en une ligne ou en base64).
+3. **Config client** : Paramètres du projet → Vos applications → ajoutez une app web et reportez les valeurs `NEXT_PUBLIC_FIREBASE_*`.
+4. **Premier administrateur** : dans Firestore, créez un document `users/{votre email en minuscules}` avec `{ email, displayName, role: "admin", invitedAt: "<date ISO>" }`. Ensuite, tout se gère depuis l'admin (page Accès).
+5. **Images** (facultatif) : un compte Cloudinary gratuit avec un *upload preset* non signé permet d'envoyer des images depuis l'admin. Sans cela, on colle une adresse d'image.
+6. **Vercel** : importez le dépôt, renseignez les variables de `.env.example` (dont `AUTH_SECRET` et `NEXT_PUBLIC_SITE_URL`), déployez. Le plan Hobby suffit.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Organisation du code
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+  app/(site)/        pages publiques (accueil, le-master, articles, membres, alumni, partenaires, contact)
+  app/admin/         espace membres : connexion, tableau de bord, articles, membres, partenaires, messages, accès, paramètres
+  app/admin/actions.ts  toutes les écritures (Server Actions), avec vérification de session
+  components/site/   header en pilule, grille de caractères, cartes, footer
+  components/admin/  éditeur Tiptap, formulaires
+  lib/db/            Store commun + implémentations fichier local et Firestore
+  lib/data.ts        lectures publiques mises en cache (invalidées après chaque écriture)
+  lib/master.ts      données factuelles du master (maquette, direction, admission)
+  lib/seed.ts        contenu de démonstration
+```
 
-## Deploy on Vercel
+## Rôles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Administrateur** : tout, plus la gestion des accès et des paramètres du site.
+- **Membre** : écrit, modifie et publie les articles, gère membres et partenaires, lit les messages.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Un accès se crée en ajoutant simplement l'adresse email de la personne (page Accès). Elle se connecte ensuite avec Google ou un compte Firebase portant cette adresse.
+
+## Scripts
+
+```bash
+pnpm dev      # développement
+pnpm build    # build de production
+pnpm start    # serveur de production
+pnpm lint     # ESLint
+```
+
+Licence MIT.
