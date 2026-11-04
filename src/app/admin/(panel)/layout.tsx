@@ -13,7 +13,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
   return (
     <>
       <Backdrop />
-      <div className="relative z-10 flex min-h-screen flex-col md:flex-row">
+      <div className="relative z-10 flex min-h-screen flex-col md:h-screen md:flex-row md:overflow-hidden">
         <aside className="glass flex shrink-0 flex-col gap-6 border-r border-line p-5 md:sticky md:top-0 md:h-screen md:w-64 md:rounded-none">
           <Suspense fallback={null}>
             <AdminNav />
@@ -24,7 +24,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
             </Suspense>
           </div>
         </aside>
-        <main className="min-w-0 flex-1 px-5 py-8 md:px-10 md:py-10">{children}</main>
+        <main className="min-w-0 flex-1 px-5 py-8 md:overflow-y-auto md:px-10 md:py-10">{children}</main>
       </div>
     </>
   );

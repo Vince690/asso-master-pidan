@@ -22,7 +22,7 @@ const EASE = [0.22, 0.61, 0.36, 1] as const;
 
 /**
  * Navigation en pilule flottante.
- * - La pilule s'agrandit légèrement au survol (transition sans rebond).
+ * - La pilule garde une taille fixe.
  * - Chaque entrée a une zone de survol qui occupe toute la hauteur de la barre : le surligneur
  *   se place dès que le curseur est au-dessus ou en dessous du texte, pas seulement sur la pilule.
  * - Le surligneur glisse d'un item à l'autre et apparaît en fondu, jamais en rebond.
@@ -31,7 +31,6 @@ const EASE = [0.22, 0.61, 0.36, 1] as const;
 export default function Header() {
   const pathname = usePathname();
   const [hovered, setHovered] = useState<string | null>(null);
-  const [expanded, setExpanded] = useState(false);
   const [section, setSection] = useState<string>("hero");
   const [shine, setShine] = useState(0);
   const [openPath, setOpenPath] = useState<string | null>(null);
@@ -85,15 +84,7 @@ export default function Header() {
       <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center px-4 pt-[max(1rem,env(safe-area-inset-top,0px))]">
         <motion.nav
           aria-label="Navigation principale"
-          onMouseEnter={() => setExpanded(true)}
-          onMouseLeave={() => {
-            setExpanded(false);
-            setHovered(null);
-          }}
-          initial={false}
-          animate={{ scale: expanded ? 1.05 : 1 }}
-          transition={{ duration: 0.32, ease: EASE }}
-          style={{ transformOrigin: "50% 0%", willChange: "transform" }}
+          onMouseLeave={() => setHovered(null)}
           className="header-glass glass-edge pointer-events-auto flex items-stretch gap-1 rounded-full px-1.5 py-1.5"
         >
           <Link href="/" className="mr-2 flex items-center gap-2.5 pl-2 pr-1 outline-none" aria-label="PID@N, accueil">

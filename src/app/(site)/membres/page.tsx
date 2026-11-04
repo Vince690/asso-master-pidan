@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 
 export default async function MembersPage() {
   const [members, settings] = await Promise.all([getMembers(), getSettings()]);
+  const direction = members.find((m) => m.pole === "direction");
   const promo = members
     .filter((m) => m.promo === settings.currentPromo && m.pole !== "direction")
     .sort((a, b) => a.lastName.localeCompare(b.lastName, "fr") || a.firstName.localeCompare(b.firstName, "fr"));
@@ -29,6 +30,11 @@ export default async function MembersPage() {
         </Link>
       </PageHero>
       <Section className="pt-0 md:pt-0">
+        {direction && (
+          <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <MemberCard member={direction} />
+          </div>
+        )}
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {promo.map((m) => (
             <MemberCard key={m.id} member={m} />

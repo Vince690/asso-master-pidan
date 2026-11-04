@@ -33,12 +33,21 @@ export async function getPublishedArticle(slug: string) {
   return article && article.status === "published" ? article : null;
 }
 
+/**
+ * Membres tels qu'affichés sur le site. Une personne d'une promotion antérieure à la promotion
+ * courante devient automatiquement alumni : son pôle et sa fonction dans l'association ne sont plus
+ * affichés, sans rien avoir à modifier. La direction du master n'est jamais concernée.
+ */
 export async function getMembers() {
   "use cache";
   cacheLife("days");
-  cacheTag(TAGS.members);
+  cacheTag(TAGS.members, TAGS.settings);
   const store = await db();
-  return store.members.list();
+  const [members, settings] = await Promise.all([store.members.list(), store.settings.get()]);
+  return members.map((m) => {
+    if (m.pole === "direction" || m.promo >= settings.currentPromo) return m;
+    return { ...m, pole: null, role: undefined };
+  });
 }
 
 export async function getPartners() {

@@ -47,7 +47,7 @@ export default function ArticleForm({ article }: { article?: Article }) {
             if (!slugTouched) setSlug(slugify(e.target.value));
           }}
           placeholder="Titre de l'article"
-          className="w-full bg-transparent text-[2rem] font-semibold tracking-tight text-fg outline-none placeholder:text-fg-dim"
+          className="w-full bg-transparent text-[2rem] font-semibold tracking-tight text-fg outline-none placeholder:text-fg-dim focus-visible:outline-none"
         />
         <Field label="Chapô" hint="Deux ou trois phrases affichées dans les listes, les partages et les résultats de recherche.">
           <Textarea id="excerpt" name="excerpt" required rows={3} value={excerpt} onChange={(e) => setExcerpt(e.target.value)} />

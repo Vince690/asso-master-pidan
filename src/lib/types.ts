@@ -96,7 +96,15 @@ export interface Member {
   updatedAt: string;
 }
 
-export type PartnerType = "cabinet" | "entreprise" | "institution";
+export type PartnerType = "cabinet" | "entreprise" | "institution" | "intervenant" | "association";
+
+export const PARTNER_TYPES: Record<PartnerType, string> = {
+  cabinet: "Cabinet d'avocats",
+  entreprise: "Entreprise",
+  institution: "Institution",
+  intervenant: "Intervenant",
+  association: "Association",
+};
 
 export interface Partner {
   id: string;
@@ -105,6 +113,8 @@ export interface Partner {
   url?: string;
   logo?: string;
   description?: string;
+  /** Personne qui porte le lien avec le master (ex. : « Maître X, associé ») */
+  via?: string;
   order: number;
 }
 

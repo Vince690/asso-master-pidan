@@ -156,7 +156,6 @@ const memberSchema = z.object({
   currentPosition: z.string().trim().max(120).optional(),
   currentCompany: z.string().trim().max(120).optional(),
   field: z.enum(["", ...Object.keys(ALUMNI_FIELDS)] as ["", ...string[]]).optional(),
-  order: z.coerce.number().int().min(0).max(999).default(50),
 });
 
 export async function saveMember(_prev: ActionState, formData: FormData): Promise<ActionState> {
@@ -181,7 +180,7 @@ export async function saveMember(_prev: ActionState, formData: FormData): Promis
     currentPosition: d.currentPosition || undefined,
     currentCompany: d.currentCompany || undefined,
     field: (d.field || undefined) as Member["field"],
-    order: d.order,
+    order: existing?.order ?? 50,
     createdAt: existing?.createdAt ?? now,
     updatedAt: now,
   };
@@ -203,7 +202,8 @@ export async function deleteMember(id: string) {
 const partnerSchema = z.object({
   id: z.string().optional(),
   name: z.string().trim().min(1, "Nom manquant.").max(120),
-  type: z.enum(["cabinet", "entreprise", "institution"]),
+  type: z.enum(["cabinet", "entreprise", "institution", "intervenant", "association"]),
+  via: z.string().trim().max(160).optional(),
   url: z.string().trim().url("Adresse invalide.").optional().or(z.literal("")),
   logo: z.string().trim().url().optional().or(z.literal("")),
   description: z.string().trim().max(400).optional(),
@@ -223,6 +223,7 @@ export async function savePartner(_prev: ActionState, formData: FormData): Promi
     url: d.url || undefined,
     logo: d.logo || undefined,
     description: d.description || undefined,
+    via: d.via || undefined,
     order: d.order,
   };
   await store.partners.upsert(partner);
@@ -302,8 +303,7 @@ export async function saveSettings(_prev: ActionState, formData: FormData): Prom
 }
 
 export async function saveStatuts(_prev: ActionState, formData: FormData): Promise<ActionState> {
-  const admin = await requireAdminSession();
-  if (!admin) return { error: "Réservé aux administrateurs." };
+  await requireSession();
   const html = String(formData.get("statuts") ?? "").slice(0, 200_000);
   const store = await db();
   const current = await store.settings.get();

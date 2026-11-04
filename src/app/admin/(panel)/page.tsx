@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
-import { ArrowUpRight, FileText, ScrollText, Users } from "lucide-react";
+import { ArrowUpRight, FileText, Handshake, Users } from "lucide-react";
 import { requireUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import { formatDate } from "@/lib/utils";
@@ -19,8 +19,27 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
   const user = await requireUser();
   const { erreur } = await searchParams;
   const store = await db();
-  const [articles, members, settings] = await Promise.all([store.articles.list(), store.members.list(), store.settings.get()]);
+  const [articles, members, settings, partners] = await Promise.all([
+    store.articles.list(),
+    store.members.list(),
+    store.settings.get(),
+    store.partners.list(),
+  ]);
   const drafts = articles.filter((a) => a.status === "draft");
+  const promo = members.filter((m) => m.promo === settings.currentPromo && m.pole !== "direction");
+  const alumni = members.filter((m) => m.promo < settings.currentPromo && m.pole !== "direction");
+  const todo = [
+    { label: "Étudiants sans LinkedIn", count: promo.filter((m) => !m.linkedin).length, href: "/admin/membres" },
+    { label: "Étudiants sans photo", count: promo.filter((m) => !m.photo).length, href: "/admin/membres" },
+    {
+      label: "Pôles sans responsable",
+      count: ["bureau", "communication", "veille-juridique", "evenementiel"].filter((p) => !promo.some((m) => m.pole === p)).length,
+      href: "/admin/membres",
+    },
+    { label: "Alumni sans poste renseigné", count: alumni.filter((m) => !m.currentPosition).length, href: "/admin/membres" },
+    { label: "Alumni sans métier (filtre annuaire)", count: alumni.filter((m) => !m.field).length, href: "/admin/membres" },
+    { label: "Brouillons en attente", count: drafts.length, href: "/admin/articles" },
+  ].filter((t) => t.count > 0);
 
   return (
     <>
@@ -41,13 +60,7 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
             extra: drafts.length ? `${drafts.length} brouillon${drafts.length > 1 ? "s" : ""}` : null,
           },
           { icon: Users, label: "Membres et alumni", value: members.length, href: "/admin/membres", extra: null },
-          {
-            icon: ScrollText,
-            label: "Statuts",
-            value: settings.statutsHtml?.trim() ? "publiés" : "à rédiger",
-            href: "/admin/statuts",
-            extra: null,
-          },
+          { icon: Handshake, label: "Partenaires", value: partners.length, href: "/admin/partenaires", extra: null },
         ].map((s) => (
           <Link
             key={s.label}
@@ -92,29 +105,22 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
           </ul>
         </Panel>
         <Panel className="p-5">
-          <h2 className="mb-4 font-semibold text-fg">Raccourcis</h2>
-          <ul className="flex flex-col gap-2 text-sm">
-            <li>
-              <Link href="/admin/membres/nouveau" className="link-pill text-fg-muted">
-                Ajouter une personne à la promotion
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/partenaires" className="link-pill text-fg-muted">
-                Ajouter un partenaire
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/statuts" className="link-pill text-fg-muted">
-                Publier les statuts
-              </Link>
-            </li>
-            <li>
-              <Link href="/" className="link-pill text-fg-muted">
-                Voir le site
-              </Link>
-            </li>
-          </ul>
+          <h2 className="mb-1 font-semibold text-fg">À compléter</h2>
+          <p className="mb-4 text-xs text-fg-dim">Ce qui manque pour que le site soit à jour. La liste se vide toute seule.</p>
+          {todo.length === 0 ? (
+            <p className="py-6 text-center text-sm text-fg-dim">Tout est à jour.</p>
+          ) : (
+            <ul className="divide-y divide-line">
+              {todo.map((t) => (
+                <li key={t.label}>
+                  <Link href={t.href} className="flex items-center justify-between gap-4 py-3 text-sm text-fg-muted hover:text-fg">
+                    <span>{t.label}</span>
+                    <span className="rounded-full border border-line px-2 py-0.5 font-mono text-xs text-fg">{t.count}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </Panel>
       </div>
     </>

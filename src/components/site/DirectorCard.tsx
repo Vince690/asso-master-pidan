@@ -16,9 +16,8 @@ export default function DirectorCard({ member, compact = false }: { member: Memb
     <article className="glass glass-edge grid gap-6 rounded-[2rem] p-6 md:grid-cols-[auto_1fr] md:gap-8 md:p-8">
       <Avatar firstName={member.firstName} lastName={member.lastName} photo={member.photo} size={compact ? 88 : 112} tone="color" />
       <div className="min-w-0">
-        <p className="eyebrow">Direction du master</p>
-        <h3 className="mt-2 text-[1.6rem] font-semibold tracking-tight text-fg md:text-[1.9rem]">{name}</h3>
-        {member.role && <p className="mt-0.5 text-fg-muted">Professeure de droit privé, {member.role.toLowerCase()}</p>}
+        <h3 className="mt-0 text-[1.6rem] font-semibold tracking-tight text-fg md:text-[1.9rem]">{name}</h3>
+        {member.role && <p className="mt-0.5 text-fg-muted">{member.role}</p>}
         {member.bio && (
           <p
             className={

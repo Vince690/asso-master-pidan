@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail } from "lucide-react";
+import { Check, Copy, Mail } from "lucide-react";
 import { buttonClass } from "@/components/ui/Button";
 import { Field, Select, Textarea } from "@/components/admin/Field";
 
@@ -32,6 +32,16 @@ export function resolveSubject(value?: string): string {
 export default function MailComposer({ to, defaultSubject }: { to: string; defaultSubject?: string }) {
   const [subject, setSubject] = useState(resolveSubject(defaultSubject));
   const [message, setMessage] = useState("");
+  const [copied, setCopied] = useState(false);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(to);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
+    } catch {
+      /* presse-papiers indisponible : l'adresse reste sélectionnable */
+    }
+  };
   const href = `mailto:${to}?subject=${encodeURIComponent(`[PID@N] ${subject}`)}${message ? `&body=${encodeURIComponent(message)}` : ""}`;
 
   return (
@@ -52,8 +62,17 @@ export default function MailComposer({ to, defaultSubject }: { to: string; defau
         <a href={href} className={buttonClass("electric")}>
           <Mail size={16} /> Ouvrir ma messagerie
         </a>
-        <span className="text-sm text-fg-dim">
+        <span className="inline-flex items-center gap-1.5 text-sm text-fg-dim">
           ou écrivez directement à <span className="text-fg-muted select-all">{to}</span>
+          <button
+            type="button"
+            onClick={copy}
+            aria-label="Copier l'adresse"
+            title={copied ? "Copié" : "Copier l'adresse"}
+            className="inline-flex h-7 w-7 items-center justify-center rounded-full text-fg-dim hover:bg-white/10 hover:text-fg"
+          >
+            {copied ? <Check size={14} className="text-emerald-300" /> : <Copy size={14} />}
+          </button>
         </span>
       </div>
     </div>

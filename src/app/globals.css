@@ -77,6 +77,10 @@ body {
   outline-offset: 3px;
   border-radius: 6px;
 }
+/* Les champs de saisie et la navigation signalent le focus par leur bordure, pas par un anneau */
+:is(input, textarea, select, [contenteditable], nav a):focus-visible {
+  outline: none;
+}
 
 /* ---- Verre liquide ---- */
 @utility glass {
@@ -326,9 +330,19 @@ body {
   background: linear-gradient(90deg, transparent, rgb(155 182 255 / 0.55), transparent);
   pointer-events: none;
 }
-.cta-shine:hover .cta-ray,
 .cta-ray.run {
   animation: shine 0.7s ease-out both;
+}
+.cta-shine:hover .cta-ray {
+  animation: shine-hover 0.7s ease-out both;
+}
+@keyframes shine-hover {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
 }
 
 /* Survol instantané : l'état apparaît sans fondu, et s'efface en douceur (effet de traînée) */

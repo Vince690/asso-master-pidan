@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { requireAdmin } from "@/lib/auth/guard";
+import { requireUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
 import StatutsForm from "@/components/admin/StatutsForm";
 import { AdminHeader, Skeleton } from "@/components/admin/Shell";
@@ -21,7 +21,7 @@ export default function StatutsAdminPage() {
 }
 
 async function Form() {
-  await requireAdmin();
+  await requireUser();
   const store = await db();
   const settings = await store.settings.get();
   return <StatutsForm initialHtml={settings.statutsHtml ?? ""} />;

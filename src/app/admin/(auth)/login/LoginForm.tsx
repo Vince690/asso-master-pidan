@@ -39,7 +39,10 @@ function DemoLogin({ accounts }: { accounts: Demo[] }) {
         ))}
       </div>
       <form action={action} className="flex flex-col gap-3 border-t border-line pt-5">
-        <Field label="Autre adresse invitée">
+        <Field
+          label="Autre adresse"
+          hint="Une adresse ajoutée dans la page Accès par un administrateur. En mode démo, aucun mot de passe n'est demandé."
+        >
           <Input id="email" name="email" type="email" placeholder="prenom.nom@exemple.fr" required />
         </Field>
         <FormMessage message={state.error} />

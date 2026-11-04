@@ -37,9 +37,6 @@ export default function MemberForm({ member, defaultPromo }: { member?: Member; 
       <Field label="Fonction" hint="Présidente, Trésorier, Responsable LinkedIn…">
         <Input id="role" name="role" defaultValue={member?.role} />
       </Field>
-      <Field label="Ordre d'affichage" hint="Plus petit = plus haut.">
-        <Input id="order" name="order" type="number" min={0} defaultValue={member?.order ?? 50} />
-      </Field>
       <Field label="Email de contact" hint="Facultatif, affiché publiquement sur la fiche.">
         <Input id="email" name="email" type="email" defaultValue={member?.email} />
       </Field>

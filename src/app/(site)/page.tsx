@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
 import { Instagram, Linkedin } from "@/components/ui/Icons";
 import { getMembers, getPartners, getPublishedArticles, getSettings } from "@/lib/data";
-import { CURRICULUM, MASTER } from "@/lib/master";
+import { MASTER } from "@/lib/master";
 import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
 import { promoLabel } from "@/lib/utils";
 import { ALUMNI_FIELDS, type AlumniField } from "@/lib/types";
@@ -10,44 +10,31 @@ import { buttonClass, LinkButton } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import ArticleCard from "@/components/site/ArticleCard";
 import MemberCard from "@/components/site/MemberCard";
-import DirectorCard from "@/components/site/DirectorCard";
+import DirectorRow from "@/components/site/DirectorRow";
 import MailComposer from "@/components/site/MailComposer";
 
 const THEMES = [
   {
     title: "Propriété intellectuelle",
     text: "Droit d'auteur, marques, brevets et leur valorisation, de l'open source aux contrats spéciaux.",
-    codes: ["MYPI300", "MYPI401", "MYPI400"],
-    span: "md:col-span-3",
   },
   {
     title: "Données, IA et libertés",
     text: "RGPD, AI Act, cybercriminalité, sécurité des systèmes : la matière qui bouge le plus vite.",
-    codes: ["MYPI310", "MYPI404", "MYPI306"],
-    span: "md:col-span-3",
   },
   {
     title: "Contrats et contentieux numériques",
     text: "Négocier et plaider dans l'univers digital, en français et en anglais.",
-    codes: ["MYPI303", "MYPI409", "MYPI305"],
-    span: "md:col-span-2",
   },
   {
     title: "Marchés et régulation",
     text: "Concurrence et innovation, commerce électronique, télécoms et audiovisuel.",
-    codes: ["MYPI402", "MYPI411", "MYPI403"],
-    span: "md:col-span-2",
   },
   {
     title: "Culture technique",
     text: "Réseaux, cryptologie, informatique appliquée : comprendre ce que l'on régule.",
-    codes: ["MYPI307", "MYPI405", "MYPI414"],
-    span: "md:col-span-2",
   },
 ];
-
-const allCourses = CURRICULUM.flatMap((b) => b.courses);
-const courseTitle = (code: string) => allCourses.find((c) => c.code === code)?.title ?? code;
 
 function MoreLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -140,38 +127,41 @@ export default async function HomePage() {
 
       {/* ---- Le master ---- */}
       <Section id="master">
-        <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
-          <SectionHeading
-            className="mb-0"
-            eyebrow="Le master"
-            title="Ce qu'on y apprend."
-            lead="Six blocs, vingt-trois enseignements, un mémoire, six mois de stage."
-          />
-          <MoreLink href="/le-master">Maquette complète</MoreLink>
-        </div>
-        <div className="grid gap-4 md:grid-cols-6">
-          {THEMES.map((t) => (
-            <div key={t.title} className={t.span}>
-              <div className="glass glass-edge flex h-full flex-col gap-3 rounded-3xl p-6">
-                <h3 className="text-xl font-semibold tracking-tight text-fg">{t.title}</h3>
-                <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
-                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4">
-                  {t.codes.map((code) => (
-                    <li key={code} className="grid grid-cols-[3.6rem_1fr] items-baseline gap-3 text-[0.82rem] text-fg-muted">
-                      <span className="font-mono text-[0.68rem] text-fg-dim">{code}</span>
-                      <span className="line-clamp-1">{courseTitle(code)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] md:gap-16">
+          <div className="flex flex-col gap-6">
+            <SectionHeading
+              className="mb-0"
+              eyebrow="Le master"
+              title="Ce qu'on y apprend."
+              lead="Une année, six blocs de compétences, vingt-trois enseignements, un mémoire et six mois de stage."
+            />
+            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line pt-5 text-sm">
+              {[
+                ["Diplôme", "Master 2, Paris-Saclay"],
+                ["Campus", "Guyancourt"],
+                ["Langues", "Français et anglais"],
+                ["Stage", "Six mois"],
+              ].map(([k, v]) => (
+                <div key={k}>
+                  <dt className="font-mono text-xs text-fg-dim">{k}</dt>
+                  <dd className="mt-0.5 text-fg">{v}</dd>
+                </div>
+              ))}
+            </dl>
+            {direction && <DirectorRow member={direction} />}
+            <div>
+              <MoreLink href="/le-master">Maquette complète</MoreLink>
             </div>
-          ))}
-        </div>
-        {direction && (
-          <div className="mt-4">
-            <DirectorCard member={direction} compact />
           </div>
-        )}
+          <ol className="flex flex-col divide-y divide-line border-y border-line">
+            {THEMES.map((t) => (
+              <li key={t.title} className="grid gap-1 py-5 md:grid-cols-[14rem_1fr] md:gap-6">
+                <h3 className="text-[1.05rem] font-semibold tracking-tight text-fg">{t.title}</h3>
+                <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
       </Section>
 
       {/* ---- Articles ---- */}

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ArrowUpRight } from "lucide-react";
 import { getPartners } from "@/lib/data";
-import type { PartnerType } from "@/lib/types";
+import { PARTNER_TYPES, type PartnerType } from "@/lib/types";
 import { PageHero, Section, SectionHeading } from "@/components/ui/Section";
 import { LinkButton } from "@/components/ui/Button";
 import Reveal from "@/components/ui/Reveal";
@@ -12,7 +12,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/partenaires" },
 };
 
-const TYPES: Record<PartnerType, string> = { cabinet: "Cabinets", entreprise: "Entreprises", institution: "Institutions" };
+const TYPES: Record<PartnerType, string> = {
+  cabinet: "Cabinets d'avocats",
+  entreprise: "Entreprises",
+  institution: "Institutions",
+  intervenant: "Intervenants",
+  association: "Associations",
+};
+void PARTNER_TYPES;
 
 export default async function PartnersPage() {
   const partners = await getPartners();
@@ -58,6 +65,7 @@ export default async function PartnersPage() {
                       </a>
                     )}
                   </div>
+                  {p.via && <p className="font-mono text-xs text-electric-300">{p.via}</p>}
                   {p.description && <p className="text-sm leading-relaxed text-fg-muted">{p.description}</p>}
                 </li>
               ))}

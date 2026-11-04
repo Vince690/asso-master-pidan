@@ -3,10 +3,10 @@ import { ArrowUpRight, MapPin } from "lucide-react";
 import { CURRICULUM, MASTER } from "@/lib/master";
 import { getMembers } from "@/lib/data";
 import DirectorCard from "@/components/site/DirectorCard";
+import CurriculumTabs from "@/components/site/CurriculumTabs";
 import { PageHero, Section, SectionHeading } from "@/components/ui/Section";
 import { LinkButton } from "@/components/ui/Button";
 import { SITE_URL } from "@/lib/site";
-import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "Le master",
@@ -29,11 +29,6 @@ export default async function MasterPage() {
     numberOfCredits: MASTER.ects,
     inLanguage: ["fr", "en"],
   };
-
-  const semesters = [
-    { label: "Semestre 3", blocks: CURRICULUM.filter((b) => b.semester === 3), ects: 26, hours: 165 },
-    { label: "Semestre 4", blocks: CURRICULUM.filter((b) => b.semester === 4), ects: 34, hours: 212 },
-  ];
 
   return (
     <>
@@ -87,51 +82,7 @@ export default async function MasterPage() {
           title="Six blocs, soixante crédits."
           lead={`${MASTER.hours} heures de cours sur deux semestres, du socle de propriété intellectuelle aux options en anglais.`}
         />
-        <div className="flex flex-col gap-10">
-          {semesters.map((sem) => (
-            <div key={sem.label}>
-              <div className="mb-4 flex items-baseline justify-between border-b border-line pb-3">
-                <h3 className="text-xl font-semibold tracking-tight text-fg">{sem.label}</h3>
-                <span className="font-mono text-xs text-fg-muted">
-                  {sem.ects} ECTS · {sem.hours} h
-                </span>
-              </div>
-              <div className="grid gap-4 lg:grid-cols-2">
-                {sem.blocks.map((b) => (
-                  <article key={b.id} className="glass glass-edge flex flex-col rounded-3xl p-6 md:p-7">
-                    <header className="flex items-start justify-between gap-4">
-                      <div>
-                        <h4 className="text-[1.15rem] leading-snug font-semibold tracking-tight text-fg text-balance">{b.title}</h4>
-                        <p className="mt-1.5 text-sm text-fg-muted">{b.intent}</p>
-                      </div>
-                      <span className="shrink-0 rounded-full bg-electric-500/15 px-3 py-1 font-mono text-[0.72rem] text-electric-200">
-                        {b.ects} ECTS
-                      </span>
-                    </header>
-                    <ul className="mt-5 flex flex-col gap-1.5">
-                      {b.courses.map((c) => (
-                        <li
-                          key={c.code}
-                          className={cn(
-                            "grid items-baseline gap-x-3 rounded-xl bg-white/[0.04] px-3.5 py-2.5",
-                            b.optional ? "grid-cols-[1.4rem_1fr_auto]" : "grid-cols-[1fr_auto]",
-                          )}
-                        >
-                          {b.optional && <span className="font-mono text-xs text-fg-dim">ou</span>}
-                          <span className="text-[0.95rem] leading-snug text-fg">
-                            {c.title}
-                            {c.note && <span className="ml-2 text-xs text-fg-dim">({c.note})</span>}
-                          </span>
-                          <span className="font-mono text-xs text-fg-muted tabular-nums">{c.hours} h</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </article>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <CurriculumTabs blocks={CURRICULUM} />
       </Section>
 
       {/* Direction */}
