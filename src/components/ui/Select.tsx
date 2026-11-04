@@ -132,7 +132,7 @@ export default function Select({
           id={listId}
           role="listbox"
           aria-activedescendant={`${listId}-${cursor}`}
-          className="glass-strong animate-pop absolute inset-x-0 top-[calc(100%+0.4rem)] z-30 max-h-64 overflow-y-auto rounded-xl p-1"
+          className="glass-strong animate-pop absolute inset-x-0 top-[calc(100%+0.4rem)] z-30 max-h-64 overflow-y-auto rounded-2xl p-1.5"
         >
           {options.map((o, i) => (
             <li key={o.value} id={`${listId}-${i}`} role="option" aria-selected={o.value === current}>
@@ -141,7 +141,7 @@ export default function Select({
                 onClick={() => choose(o.value)}
                 onPointerEnter={() => setCursor(i)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-[0.92rem] text-fg-muted",
+                  "flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-[0.92rem] text-fg-muted",
                   i === cursor && "bg-white/10 text-fg",
                   o.value === current && "text-fg",
                 )}

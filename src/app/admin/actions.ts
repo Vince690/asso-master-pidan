@@ -216,8 +216,9 @@ export async function savePartner(_prev: ActionState, formData: FormData): Promi
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Formulaire invalide." };
   const d = parsed.data;
   const store = await db();
+  const id = d.id || newId("p_");
   const partner: Partner = {
-    id: d.id || newId("p_"),
+    id,
     name: d.name,
     type: d.type,
     url: d.url || undefined,
@@ -226,6 +227,18 @@ export async function savePartner(_prev: ActionState, formData: FormData): Promi
     via: d.via || undefined,
     order: d.order,
   };
+  // Positions : si le numéro choisi est déjà pris, l'autre partenaire récupère l'ancienne
+  // position de celui-ci (échange). Pour un nouveau partenaire, les suivants sont décalés.
+  const others = (await store.partners.list()).filter((p) => p.id !== id);
+  const previous = d.id ? (await store.partners.get(id))?.order : undefined;
+  const taken = others.find((p) => p.order === d.order);
+  if (taken) {
+    if (previous !== undefined && previous !== d.order) {
+      await store.partners.upsert({ ...taken, order: previous });
+    } else {
+      for (const p of others.filter((p) => p.order >= d.order)) await store.partners.upsert({ ...p, order: p.order + 1 });
+    }
+  }
   await store.partners.upsert(partner);
   updateTag(TAGS.partners);
   redirect("/admin/partenaires?ok=1");

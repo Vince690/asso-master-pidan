@@ -127,9 +127,12 @@ export default function Header() {
 
           <SmartLink
             href={sectionHref("contact")}
-            onMouseEnter={() => setHovered("cta")}
+            onMouseEnter={() => {
+              setHovered("cta");
+              setShine((n) => n + 1);
+            }}
             onMouseLeave={() => setHovered((h) => (h === "cta" ? null : h))}
-            className="cta-shine relative ml-1 hidden items-center overflow-hidden rounded-full bg-fg px-4.5 py-2 text-[0.9rem] font-semibold text-ink-0 outline-none after:absolute after:inset-x-0 after:-inset-y-2.5 after:content-[''] md:inline-flex"
+            className="relative ml-1 hidden items-center overflow-hidden rounded-full bg-fg px-4.5 py-2 text-[0.9rem] font-semibold text-ink-0 outline-none after:absolute after:inset-x-0 after:-inset-y-2.5 after:content-[''] md:inline-flex"
           >
             <span key={shine} className={cn("cta-ray", shine > 0 && "run")} aria-hidden />
             <span className="relative">Nous contacter</span>

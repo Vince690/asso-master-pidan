@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, BookOpen, Briefcase, GraduationCap, Languages } from "lucide-react";
+import { ArrowUpRight, BookOpen, Briefcase, GraduationCap } from "lucide-react";
 import { CURRICULUM, MASTER } from "@/lib/master";
 import { getMembers } from "@/lib/data";
 import DirectorTile from "@/components/site/DirectorTile";
@@ -18,7 +18,6 @@ export const metadata: Metadata = {
 const KEY_POINTS = [
   { icon: Briefcase, title: "Stage", text: "six mois en moyenne" },
   { icon: BookOpen, title: "Mémoire", text: "recherche encadrée toute l'année" },
-  { icon: Languages, title: "Anglais", text: "une partie des cours" },
   { icon: GraduationCap, title: "Doctorat", text: "possible au laboratoire DANTE" },
 ];
 

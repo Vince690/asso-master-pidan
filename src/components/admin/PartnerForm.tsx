@@ -33,9 +33,7 @@ export default function PartnerForm({ partner, title, nextOrder = 1 }: { partner
       <Field label="Position" hint="1 s'affiche en premier. Rempli automatiquement.">
         <Input id="order" name="order" type="number" min={1} max={999} defaultValue={partner?.order ?? nextOrder} />
       </Field>
-      <div className="sm:col-span-2">
-        <ImageField name="logo" label="Logo" initialUrl={partner?.logo} hint="Facultatif." />
-      </div>
+      <ImageField name="logo" label="Logo" initialUrl={partner?.logo} hint="Facultatif." />
       <Field label="Description" className="sm:col-span-2">
         <Textarea id="description" name="description" rows={2} maxLength={400} defaultValue={partner?.description} />
       </Field>

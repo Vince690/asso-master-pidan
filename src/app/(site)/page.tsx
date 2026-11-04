@@ -1,8 +1,8 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Copyright, Cpu, Landmark, Mail, Scale, ShieldCheck } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
 import { Instagram, Linkedin } from "@/components/ui/Icons";
 import { getMembers, getPartners, getPublishedArticles, getSettings } from "@/lib/data";
-import { MASTER } from "@/lib/master";
+import { CURRICULUM, MASTER } from "@/lib/master";
 import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
 import { promoLabel } from "@/lib/utils";
 import { ALUMNI_FIELDS, type AlumniField } from "@/lib/types";
@@ -13,34 +13,42 @@ import MemberCard from "@/components/site/MemberCard";
 import DirectorTile from "@/components/site/DirectorTile";
 import MailComposer from "@/components/site/MailComposer";
 
-/** Les cinq grands thèmes du master, tels qu'ils ressortent de la maquette. */
+/** Les cinq grands thèmes du master, avec trois cours représentatifs chacun (titres tirés de la maquette). */
 const THEMES = [
   {
-    icon: Copyright,
     title: "Propriété intellectuelle",
     text: "Droit d'auteur, marques, brevets et leur valorisation, de l'open source aux contrats spéciaux.",
+    codes: ["MYPI300", "MYPI401", "MYPI400"],
+    span: "md:col-span-3",
   },
   {
-    icon: ShieldCheck,
     title: "Données, IA et libertés",
     text: "RGPD, AI Act, cybercriminalité, sécurité des systèmes : la matière qui bouge le plus vite.",
+    codes: ["MYPI310", "MYPI404", "MYPI306"],
+    span: "md:col-span-3",
   },
   {
-    icon: Scale,
     title: "Contrats et contentieux numériques",
     text: "Négocier et plaider dans l'univers digital, en français et en anglais.",
+    codes: ["MYPI303", "MYPI409", "MYPI305"],
+    span: "md:col-span-2",
   },
   {
-    icon: Landmark,
     title: "Marchés et régulation",
     text: "Concurrence et innovation, commerce électronique, télécoms et audiovisuel.",
+    codes: ["MYPI402", "MYPI411", "MYPI403"],
+    span: "md:col-span-2",
   },
   {
-    icon: Cpu,
     title: "Culture technique",
     text: "Réseaux, cryptologie, informatique appliquée : comprendre ce que l'on régule.",
+    codes: ["MYPI307", "MYPI405", "MYPI414"],
+    span: "md:col-span-2",
   },
 ];
+
+const allCourses = CURRICULUM.flatMap((b) => b.courses);
+const courseTitle = (code: string) => allCourses.find((c) => c.code === code)?.title ?? code;
 
 function MoreLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
@@ -138,34 +146,32 @@ export default async function HomePage() {
             className="mb-0"
             eyebrow="Le master"
             title="Ce qu'on y apprend."
-            lead="Une année pour couvrir le droit de l'économie numérique : six blocs de compétences, vingt-trois enseignements, un mémoire et six mois de stage."
+            lead="Six blocs, vingt-trois enseignements, un mémoire, six mois de stage."
           />
           <MoreLink href="/le-master">Maquette complète</MoreLink>
         </div>
-        <dl className="mb-6 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-line py-6 sm:grid-cols-4">
-          {[
-            ["Diplôme", "Master 2, Paris-Saclay"],
-            ["Campus", "Guyancourt"],
-            ["Langues", "Français et anglais"],
-            ["Stage", "Six mois"],
-          ].map(([k, v]) => (
-            <div key={k} className="flex flex-col gap-1">
-              <dt className="font-mono text-xs text-fg-dim">{k}</dt>
-              <dd className="text-lg font-semibold tracking-tight text-fg">{v}</dd>
+        <div className="grid gap-4 md:grid-cols-6">
+          {THEMES.map((t) => (
+            <div key={t.title} className={t.span}>
+              <div className="glass glass-edge flex h-full flex-col gap-3 rounded-3xl p-6">
+                <h3 className="text-xl font-semibold tracking-tight text-fg">{t.title}</h3>
+                <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
+                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4">
+                  {t.codes.map((code) => (
+                    <li key={code} className="grid grid-cols-[3.6rem_1fr] items-baseline gap-3 text-[0.82rem] text-fg-muted">
+                      <span className="font-mono text-[0.68rem] text-fg-dim">{code}</span>
+                      <span className="line-clamp-1">{courseTitle(code)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           ))}
-        </dl>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {THEMES.map(({ icon: Icon, title, text }) => (
-            <div key={title} className="glass glass-edge rounded-3xl p-6 md:p-7">
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-electric-500/15 text-electric-200">
-                <Icon size={18} />
-              </span>
-              <h3 className="mt-5 text-xl font-semibold tracking-tight text-fg text-balance">{title}</h3>
-              <p className="mt-2 text-[0.95rem] leading-relaxed text-fg-muted">{text}</p>
+          {direction && (
+            <div className="md:col-span-6">
+              <DirectorTile member={direction} variant="band" />
             </div>
-          ))}
-          {direction && <DirectorTile member={direction} />}
+          )}
         </div>
       </Section>
 

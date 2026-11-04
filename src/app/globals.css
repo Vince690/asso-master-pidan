@@ -348,17 +348,6 @@ body {
 .cta-ray.run {
   animation: shine 0.7s ease-out both;
 }
-.cta-shine:hover .cta-ray {
-  animation: shine-hover 0.7s ease-out both;
-}
-@keyframes shine-hover {
-  from {
-    transform: translateX(-120%);
-  }
-  to {
-    transform: translateX(120%);
-  }
-}
 
 /* Survol instantané : l'état apparaît sans fondu, et s'efface en douceur (effet de traînée) */
 :is(.link-pill, nav a, button, summary):hover,
