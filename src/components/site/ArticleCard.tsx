@@ -5,17 +5,21 @@ import { ARTICLE_CATEGORIES } from "@/lib/types";
 import { cn, formatDate } from "@/lib/utils";
 import Cover from "@/components/ui/Cover";
 
-/** Un seul effet au survol : la carte entière se soulève et prend sa lueur prune. L'image ne bouge pas. */
+/**
+ * Un seul effet au survol : la carte se soulève et prend sa lueur prune, l'image ne bouge pas.
+ * Le lien reste immobile et seule la surface intérieure se déplace : au bord de la carte, le survol
+ * ne clignote donc pas.
+ */
 export default function ArticleCard({ article, featured = false }: { article: Article; featured?: boolean }) {
   const cat = ARTICLE_CATEGORIES[article.category];
   return (
-    <Link
-      href={`/articles/${article.slug}`}
-      className={cn(
-        "group glass glass-edge relative flex flex-col overflow-hidden rounded-3xl transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] hover:-translate-y-1.5 hover:shadow-[var(--shadow-glow-plum)]",
-        featured && "md:col-span-2 md:flex-row",
-      )}
-    >
+    <Link href={`/articles/${article.slug}`} className={cn("group relative block", featured && "md:col-span-2")}>
+      <div
+        className={cn(
+          "glass glass-edge flex h-full flex-col overflow-hidden rounded-3xl transition-[transform,box-shadow] duration-700 ease-[cubic-bezier(0.22,0.61,0.36,1)] group-hover:-translate-y-1.5 group-hover:shadow-[var(--shadow-glow-plum)]",
+          featured && "md:flex-row",
+        )}
+      >
       <div className={cn("relative aspect-[21/9] overflow-hidden", featured && "md:aspect-auto md:w-1/2")}>
         {article.coverImage ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -49,6 +53,7 @@ export default function ArticleCard({ article, featured = false }: { article: Ar
           {article.title}
         </h3>
         <p className={cn("text-sm leading-relaxed text-fg-muted", featured ? "line-clamp-4" : "line-clamp-2")}>{article.excerpt}</p>
+      </div>
       </div>
     </Link>
   );

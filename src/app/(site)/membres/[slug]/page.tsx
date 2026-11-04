@@ -48,7 +48,7 @@ async function Sheet({ params }: Pick<PageProps<"/membres/[slug]">, "params">) {
   if (!member) notFound();
   const name = `${member.firstName} ${member.lastName}`;
   const alumni = member.promo < settings.currentPromo;
-  const back = alumni ? { href: "/alumni", label: "Tous les alumni" } : { href: "/membres", label: "Toute la promotion" };
+  const back = alumni ? { href: "/alumni", label: "Tous les alumni" } : { href: "/#membres", label: "Toute la promotion" };
 
   return (
     <div className="container-site pt-32 md:pt-40">

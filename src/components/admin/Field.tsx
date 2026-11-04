@@ -22,9 +22,7 @@ export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   return <textarea className={cn(inputClass, "min-h-24 resize-y", className)} {...props} />;
 }
 
-export function Select({ className, ...props }: ComponentProps<"select">) {
-  return <select className={cn(inputClass, "appearance-none bg-ink-1", className)} {...props} />;
-}
+export { default as Select } from "@/components/ui/Select";
 
 export function FormMessage({ message, tone = "error" }: { message?: string | null; tone?: "error" | "success" }) {
   if (!message) return null;

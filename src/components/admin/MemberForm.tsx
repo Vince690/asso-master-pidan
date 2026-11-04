@@ -25,14 +25,12 @@ export default function MemberForm({ member, defaultPromo }: { member?: Member; 
         <Input id="promo" name="promo" type="number" min={2000} max={2100} required defaultValue={member?.promo ?? defaultPromo} />
       </Field>
       <Field label="Pôle">
-        <Select id="pole" name="pole" defaultValue={member?.pole ?? ""}>
-          <option value="">Aucun</option>
-          {Object.entries(POLES).map(([k, p]) => (
-            <option key={k} value={k}>
-              {p.label}
-            </option>
-          ))}
-        </Select>
+        <Select
+          id="pole"
+          name="pole"
+          defaultValue={member?.pole ?? ""}
+          options={[{ value: "", label: "Aucun" }, ...Object.entries(POLES).map(([value, p]) => ({ value, label: p.label }))]}
+        />
       </Field>
       <Field label="Fonction" hint="Présidente, Trésorier, Responsable LinkedIn…">
         <Input id="role" name="role" defaultValue={member?.role} />
@@ -64,14 +62,12 @@ export default function MemberForm({ member, defaultPromo }: { member?: Member; 
         label="Métier (alumni)"
         hint="Sert à filtrer l'annuaire. Laissez vide si aucune famille ne convient : la fiche reste dans « Tous »."
       >
-        <Select id="field" name="field" defaultValue={member?.field ?? ""}>
-          <option value="">Non précisé</option>
-          {Object.entries(ALUMNI_FIELDS).map(([k, label]) => (
-            <option key={k} value={k}>
-              {label}
-            </option>
-          ))}
-        </Select>
+        <Select
+          id="field"
+          name="field"
+          defaultValue={member?.field ?? ""}
+          options={[{ value: "", label: "Non précisé" }, ...Object.entries(ALUMNI_FIELDS).map(([value, label]) => ({ value, label }))]}
+        />
       </Field>
       <div className="sm:col-span-2">
         <FormMessage message={state.error} />

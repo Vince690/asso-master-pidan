@@ -16,10 +16,15 @@ export default function InviteForm() {
         <Input id="invite-name" name="displayName" required placeholder="Prénom Nom" />
       </Field>
       <Field label="Rôle">
-        <Select id="invite-role" name="role" defaultValue="member">
-          <option value="member">Membre</option>
-          <option value="admin">Administrateur</option>
-        </Select>
+        <Select
+          id="invite-role"
+          name="role"
+          defaultValue="member"
+          options={[
+            { value: "member", label: "Membre" },
+            { value: "admin", label: "Administrateur" },
+          ]}
+        />
       </Field>
       <FormMessage message={state.error} />
       <FormMessage message={state.ok} tone="success" />

@@ -20,7 +20,7 @@ function Tool({ onClick, active, label, children }: { onClick: () => void; activ
       aria-label={label}
       title={label}
       className={cn(
-        "inline-flex h-8 w-8 items-center justify-center rounded-lg text-fg-muted transition-colors hover:bg-white/10 hover:text-fg",
+        "inline-flex h-8 w-8 items-center justify-center rounded-full text-fg-muted transition-colors hover:bg-white/10 hover:text-fg",
         active && "bg-white/15 text-fg",
       )}
     >

@@ -38,7 +38,7 @@ export async function GET() {
     `- [Articles](${SITE_URL}/articles) : ${Object.values(ARTICLE_CATEGORIES)
       .map((c) => c.label.toLowerCase())
       .join(", ")}.`,
-    `- [Membres](${SITE_URL}/membres) : promotion ${promoLabel(settings.currentPromo)} (${promo.length} étudiants).`,
+    `- [Membres](${SITE_URL}/#membres) : promotion ${promoLabel(settings.currentPromo)} (${promo.length} étudiants).`,
     `- [Association](${SITE_URL}/association) : bureau et pôles.`,
     `- [Alumni](${SITE_URL}/alumni) : anciens par promotion.`,
     `- [Partenaires](${SITE_URL}/partenaires) : ${partners.map((p) => p.name).join(", ")}.`,

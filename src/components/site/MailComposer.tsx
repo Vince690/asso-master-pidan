@@ -47,13 +47,7 @@ export default function MailComposer({ to, defaultSubject }: { to: string; defau
   return (
     <div className="glass glass-edge flex flex-col gap-5 rounded-3xl p-6 md:p-8">
       <Field label="Sujet">
-        <Select id="mail-subject" value={subject} onChange={(e) => setSubject(e.target.value)}>
-          {SUBJECTS.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </Select>
+        <Select id="mail-subject" value={subject} onChange={setSubject} options={SUBJECTS.map((s) => ({ value: s, label: s }))} />
       </Field>
       <Field label="Message" hint="Facultatif : il sera pré-rempli dans votre messagerie.">
         <Textarea id="mail-body" rows={5} value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Dites-nous tout." />

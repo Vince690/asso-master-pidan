@@ -58,19 +58,23 @@ export default function ArticleForm({ article }: { article?: Article }) {
       <aside className="flex flex-col gap-5 lg:sticky lg:top-6 lg:self-start">
         <div className="glass flex flex-col gap-4 rounded-2xl p-4">
           <Field label="Statut">
-            <Select id="status" name="status" defaultValue={article?.status ?? "draft"}>
-              <option value="draft">Brouillon</option>
-              <option value="published">Publié</option>
-            </Select>
+            <Select
+              id="status"
+              name="status"
+              defaultValue={article?.status ?? "draft"}
+              options={[
+                { value: "draft", label: "Brouillon" },
+                { value: "published", label: "Publié" },
+              ]}
+            />
           </Field>
           <Field label="Catégorie">
-            <Select id="category" name="category" defaultValue={article?.category ?? "veille-juridique"}>
-              {Object.entries(ARTICLE_CATEGORIES).map(([k, c]) => (
-                <option key={k} value={k}>
-                  {c.label}
-                </option>
-              ))}
-            </Select>
+            <Select
+              id="category"
+              name="category"
+              defaultValue={article?.category ?? "veille-juridique"}
+              options={Object.entries(ARTICLE_CATEGORIES).map(([value, c]) => ({ value, label: c.label }))}
+            />
           </Field>
           <Field label="Mots-clés" hint="Séparés par des virgules.">
             <Input id="tags" name="tags" defaultValue={article?.tags.join(", ")} placeholder="IA, RGPD, Droit d'auteur" />

@@ -9,7 +9,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/`, changeFrequency: "weekly", priority: 1, lastModified: lastArticle },
     { url: `${SITE_URL}/le-master`, changeFrequency: "monthly", priority: 0.9 },
     { url: `${SITE_URL}/articles`, changeFrequency: "weekly", priority: 0.9, lastModified: lastArticle },
-    { url: `${SITE_URL}/membres`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/alumni`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/partenaires`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.4 },

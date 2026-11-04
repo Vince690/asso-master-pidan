@@ -12,7 +12,7 @@ import SmartLink from "./SmartLink";
 export const NAV = [
   { id: "master", href: "/#master", label: "Le master", pages: ["/le-master"] },
   { id: "articles", href: "/#articles", label: "Articles", pages: ["/articles"] },
-  { id: "membres", href: "/#membres", label: "Membres", pages: ["/membres", "/association"] },
+  { id: "membres", href: "/#membres", label: "Membres", pages: ["/association"] },
   { id: "alumni", href: "/#alumni", label: "Alumni", pages: ["/alumni"] },
   { id: "partenaires", href: "/#partenaires", label: "Partenaires", pages: ["/partenaires"] },
 ] as const;

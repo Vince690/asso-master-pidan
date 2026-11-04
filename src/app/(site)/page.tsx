@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Copyright, Cpu, Landmark, Mail, Scale, ShieldCheck } from "lucide-react";
 import { Instagram, Linkedin } from "@/components/ui/Icons";
 import { getMembers, getPartners, getPublishedArticles, getSettings } from "@/lib/data";
 import { MASTER } from "@/lib/master";
@@ -10,27 +10,33 @@ import { buttonClass, LinkButton } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import ArticleCard from "@/components/site/ArticleCard";
 import MemberCard from "@/components/site/MemberCard";
-import DirectorRow from "@/components/site/DirectorRow";
+import DirectorTile from "@/components/site/DirectorTile";
 import MailComposer from "@/components/site/MailComposer";
 
+/** Les cinq grands thèmes du master, tels qu'ils ressortent de la maquette. */
 const THEMES = [
   {
+    icon: Copyright,
     title: "Propriété intellectuelle",
     text: "Droit d'auteur, marques, brevets et leur valorisation, de l'open source aux contrats spéciaux.",
   },
   {
+    icon: ShieldCheck,
     title: "Données, IA et libertés",
     text: "RGPD, AI Act, cybercriminalité, sécurité des systèmes : la matière qui bouge le plus vite.",
   },
   {
+    icon: Scale,
     title: "Contrats et contentieux numériques",
     text: "Négocier et plaider dans l'univers digital, en français et en anglais.",
   },
   {
+    icon: Landmark,
     title: "Marchés et régulation",
     text: "Concurrence et innovation, commerce électronique, télécoms et audiovisuel.",
   },
   {
+    icon: Cpu,
     title: "Culture technique",
     text: "Réseaux, cryptologie, informatique appliquée : comprendre ce que l'on régule.",
   },
@@ -127,40 +133,39 @@ export default async function HomePage() {
 
       {/* ---- Le master ---- */}
       <Section id="master">
-        <div className="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,1.35fr)] md:gap-16">
-          <div className="flex flex-col gap-6">
-            <SectionHeading
-              className="mb-0"
-              eyebrow="Le master"
-              title="Ce qu'on y apprend."
-              lead="Une année, six blocs de compétences, vingt-trois enseignements, un mémoire et six mois de stage."
-            />
-            <dl className="grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line pt-5 text-sm">
-              {[
-                ["Diplôme", "Master 2, Paris-Saclay"],
-                ["Campus", "Guyancourt"],
-                ["Langues", "Français et anglais"],
-                ["Stage", "Six mois"],
-              ].map(([k, v]) => (
-                <div key={k}>
-                  <dt className="font-mono text-xs text-fg-dim">{k}</dt>
-                  <dd className="mt-0.5 text-fg">{v}</dd>
-                </div>
-              ))}
-            </dl>
-            {direction && <DirectorRow member={direction} />}
-            <div>
-              <MoreLink href="/le-master">Maquette complète</MoreLink>
+        <div className="mb-8 flex flex-wrap items-end justify-between gap-6">
+          <SectionHeading
+            className="mb-0"
+            eyebrow="Le master"
+            title="Ce qu'on y apprend."
+            lead="Une année pour couvrir le droit de l'économie numérique : six blocs de compétences, vingt-trois enseignements, un mémoire et six mois de stage."
+          />
+          <MoreLink href="/le-master">Maquette complète</MoreLink>
+        </div>
+        <dl className="mb-6 grid grid-cols-2 gap-x-6 gap-y-5 border-y border-line py-6 sm:grid-cols-4">
+          {[
+            ["Diplôme", "Master 2, Paris-Saclay"],
+            ["Campus", "Guyancourt"],
+            ["Langues", "Français et anglais"],
+            ["Stage", "Six mois"],
+          ].map(([k, v]) => (
+            <div key={k} className="flex flex-col gap-1">
+              <dt className="font-mono text-xs text-fg-dim">{k}</dt>
+              <dd className="text-lg font-semibold tracking-tight text-fg">{v}</dd>
             </div>
-          </div>
-          <ol className="flex flex-col divide-y divide-line border-y border-line">
-            {THEMES.map((t) => (
-              <li key={t.title} className="grid gap-1 py-5 md:grid-cols-[14rem_1fr] md:gap-6">
-                <h3 className="text-[1.05rem] font-semibold tracking-tight text-fg">{t.title}</h3>
-                <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
-              </li>
-            ))}
-          </ol>
+          ))}
+        </dl>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {THEMES.map(({ icon: Icon, title, text }) => (
+            <div key={title} className="glass glass-edge rounded-3xl p-6 md:p-7">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-electric-500/15 text-electric-200">
+                <Icon size={18} />
+              </span>
+              <h3 className="mt-5 text-xl font-semibold tracking-tight text-fg text-balance">{title}</h3>
+              <p className="mt-2 text-[0.95rem] leading-relaxed text-fg-muted">{text}</p>
+            </div>
+          ))}
+          {direction && <DirectorTile member={direction} />}
         </div>
       </Section>
 

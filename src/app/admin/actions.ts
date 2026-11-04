@@ -207,7 +207,7 @@ const partnerSchema = z.object({
   url: z.string().trim().url("Adresse invalide.").optional().or(z.literal("")),
   logo: z.string().trim().url().optional().or(z.literal("")),
   description: z.string().trim().max(400).optional(),
-  order: z.coerce.number().int().min(0).max(999).default(50),
+  order: z.coerce.number().int().min(0).max(999).default(1),
 });
 
 export async function savePartner(_prev: ActionState, formData: FormData): Promise<ActionState> {

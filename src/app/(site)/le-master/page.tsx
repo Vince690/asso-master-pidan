@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { ArrowUpRight, MapPin } from "lucide-react";
+import { ArrowUpRight, BookOpen, Briefcase, GraduationCap, Languages } from "lucide-react";
 import { CURRICULUM, MASTER } from "@/lib/master";
 import { getMembers } from "@/lib/data";
-import DirectorCard from "@/components/site/DirectorCard";
+import DirectorTile from "@/components/site/DirectorTile";
 import CurriculumTabs from "@/components/site/CurriculumTabs";
 import { PageHero, Section, SectionHeading } from "@/components/ui/Section";
 import { LinkButton } from "@/components/ui/Button";
@@ -13,6 +13,14 @@ export const metadata: Metadata = {
   description: `${MASTER.name} (M2 PIDAN), ${MASTER.university} : objectifs, maquette des cours par blocs, direction et campus de Guyancourt.`,
   alternates: { canonical: "/le-master" },
 };
+
+/** Points clés, en dehors des cours : ce que la maquette ne montre pas. */
+const KEY_POINTS = [
+  { icon: Briefcase, title: "Stage", text: "six mois en moyenne" },
+  { icon: BookOpen, title: "Mémoire", text: "recherche encadrée toute l'année" },
+  { icon: Languages, title: "Anglais", text: "une partie des cours" },
+  { icon: GraduationCap, title: "Doctorat", text: "possible au laboratoire DANTE" },
+];
 
 export default async function MasterPage() {
   const direction = (await getMembers()).find((m) => m.pole === "direction");
@@ -50,33 +58,25 @@ export default async function MasterPage() {
         </div>
       </PageHero>
 
-      {/* Objectifs */}
-      <Section className="pt-2 md:pt-4">
-        <div className="grid gap-4 md:grid-cols-3">
-          {[
-            {
-              t: "Théorie et pratique",
-              d: "Droit des affaires fondamental, cours spécialisés en propriété intellectuelle et droit du numérique, compléments en informatique et en économie.",
-            },
-            {
-              t: "Une spécialisation choisie",
-              d: "Options, travaux personnels et mémoire permettent d'orienter l'année vers la propriété intellectuelle ou vers le droit du numérique.",
-            },
-            {
-              t: "Insertion rapide",
-              d: "Stage de six mois en moyenne, ateliers d'oralité, préparation au CN2PI, et une poursuite en doctorat possible au laboratoire DANTE.",
-            },
-          ].map((o) => (
-            <div key={o.t} className="glass glass-edge rounded-3xl p-6">
-              <h2 className="text-lg font-semibold tracking-tight text-fg">{o.t}</h2>
-              <p className="mt-2 text-[0.95rem] leading-relaxed text-fg-muted">{o.d}</p>
-            </div>
+      {/* Points clés : une rangée de petites pilules */}
+      <Section className="pt-2 pb-0 md:pt-4 md:pb-0">
+        <ul className="animate-rise flex flex-wrap gap-2 [animation-delay:260ms]">
+          {KEY_POINTS.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="glass glass-edge flex items-center gap-3 rounded-full py-1.5 pr-4 pl-1.5">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-electric-500/15 text-electric-200">
+                <Icon size={15} />
+              </span>
+              <span className="text-sm">
+                <span className="font-semibold text-fg">{title}</span>
+                <span className="text-fg-muted"> · {text}</span>
+              </span>
+            </li>
           ))}
-        </div>
+        </ul>
       </Section>
 
       {/* Programme */}
-      <Section id="programme">
+      <Section id="programme" className="pt-10 md:pt-12">
         <SectionHeading
           eyebrow="Maquette 2024-2025"
           title="Six blocs, soixante crédits."
@@ -85,36 +85,32 @@ export default async function MasterPage() {
         <CurriculumTabs blocks={CURRICULUM} />
       </Section>
 
-      {/* Direction */}
-      {direction && (
-        <Section id="direction">
-          <DirectorCard member={direction} />
-        </Section>
-      )}
-
-      {/* Lieu */}
-      <Section className="pb-4">
-        <div className="glass glass-edge flex flex-col gap-6 rounded-[2rem] p-8 md:flex-row md:items-center md:justify-between md:p-10">
-          <div className="flex items-start gap-4">
-            <span className="mt-0.5 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-line text-electric-300">
-              <MapPin size={18} />
-            </span>
-            <div>
-              <p className="text-xl font-semibold tracking-tight text-fg">{MASTER.faculty}</p>
-              <p className="mt-1 text-fg-muted">{MASTER.address}</p>
-              <p className="mt-3 text-sm text-fg-dim">
-                RER C Saint-Quentin-en-Yvelines, bibliothèque, résidence et restaurant universitaires sur place.
-              </p>
+      {/* Direction et campus : deux colonnes au même format, sans bloc rapporté */}
+      <Section id="direction" className="pb-4">
+        <div className="grid gap-10 border-t border-line pt-10 md:grid-cols-2 md:gap-16">
+          {direction && <DirectorTile member={direction} variant="column" />}
+          <div className="flex flex-col">
+            <span className="eyebrow">Campus</span>
+            <h3 className="mt-5 text-xl font-semibold tracking-tight text-fg">{MASTER.faculty}</h3>
+            <p className="mt-1 text-sm text-fg-muted">{MASTER.address}</p>
+            <p className="mt-4 text-[0.95rem] leading-relaxed text-fg-muted">
+              À deux pas du RER C Saint-Quentin-en-Yvelines. Bibliothèque, résidence et restaurant universitaires sur place.
+            </p>
+            <div className="mt-auto flex flex-wrap gap-2 pt-5">
+              <LinkButton
+                href="https://www.google.com/maps/search/?api=1&query=3+rue+de+la+Division+Leclerc+78280+Guyancourt"
+                variant="glass"
+                size="sm"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Itinéraire <ArrowUpRight size={14} />
+              </LinkButton>
+              <LinkButton href={MASTER.links.uvsq} variant="ghost" size="sm" target="_blank" rel="noreferrer">
+                Page UVSQ <ArrowUpRight size={14} />
+              </LinkButton>
             </div>
           </div>
-          <LinkButton
-            href="https://www.google.com/maps/search/?api=1&query=3+rue+de+la+Division+Leclerc+78280+Guyancourt"
-            variant="glass"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Itinéraire <ArrowUpRight size={15} />
-          </LinkButton>
         </div>
       </Section>
     </>

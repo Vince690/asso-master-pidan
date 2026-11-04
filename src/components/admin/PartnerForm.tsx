@@ -7,32 +7,31 @@ import { Button } from "@/components/ui/Button";
 import { Field, FormMessage, Input, Select, Textarea } from "./Field";
 import ImageField from "./ImageField";
 
-export default function PartnerForm({ partner, title }: { partner?: Partner; title?: string }) {
+export default function PartnerForm({ partner, title, nextOrder = 1 }: { partner?: Partner; title?: string; nextOrder?: number }) {
   const [state, action, pending] = useActionState<ActionState, FormData>(savePartner, {});
   return (
     <form action={action} className="glass grid gap-4 rounded-2xl p-5 sm:grid-cols-2">
       {title && <h2 className="text-sm font-semibold text-fg sm:col-span-2">{title}</h2>}
       {partner && <input type="hidden" name="id" value={partner.id} />}
-      <Field label="Nom">
+      <Field label="Nom" className="sm:col-span-2">
         <Input id="name" name="name" required defaultValue={partner?.name} />
       </Field>
-      <Field label="Type">
-        <Select id="type" name="type" defaultValue={partner?.type ?? "cabinet"}>
-          {Object.entries(PARTNER_TYPES).map(([k, label]) => (
-            <option key={k} value={k}>
-              {label}
-            </option>
-          ))}
-        </Select>
+      <Field label="Type" className="sm:col-span-2">
+        <Select
+          id="type"
+          name="type"
+          defaultValue={partner?.type ?? "cabinet"}
+          options={Object.entries(PARTNER_TYPES).map(([value, label]) => ({ value, label }))}
+        />
       </Field>
-      <Field label="Site web">
+      <Field label="Site web" className="sm:col-span-2">
         <Input id="url" name="url" type="url" defaultValue={partner?.url} placeholder="https://…" />
       </Field>
       <Field label="Représenté par" hint="Facultatif : la personne qui porte le lien (ex. : Maître X, associé)." className="sm:col-span-2">
         <Input id="via" name="via" defaultValue={partner?.via} />
       </Field>
-      <Field label="Ordre d'affichage">
-        <Input id="order" name="order" type="number" min={0} defaultValue={partner?.order ?? 50} />
+      <Field label="Position" hint="1 s'affiche en premier. Rempli automatiquement.">
+        <Input id="order" name="order" type="number" min={1} max={999} defaultValue={partner?.order ?? nextOrder} />
       </Field>
       <div className="sm:col-span-2">
         <ImageField name="logo" label="Logo" initialUrl={partner?.logo} hint="Facultatif." />

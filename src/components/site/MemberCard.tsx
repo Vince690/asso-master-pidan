@@ -4,6 +4,10 @@ import type { Member } from "@/lib/types";
 import { memberSlug } from "@/lib/utils";
 import Avatar from "@/components/ui/Avatar";
 
+/**
+ * Carte membre. L'élément survolé reste immobile et seule la surface intérieure se soulève :
+ * au bord de la carte, le survol ne clignote pas.
+ */
 export default function MemberCard({
   member,
   compact = false,
@@ -17,7 +21,8 @@ export default function MemberCard({
   const sub =
     member.role ?? (member.currentPosition ? [member.currentPosition, member.currentCompany].filter(Boolean).join(", ") : undefined);
   return (
-    <div className="group glass glass-edge relative flex items-center gap-4 rounded-2xl p-4 transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-plum)]">
+    <div className="group relative">
+      <div className="glass glass-edge flex items-center gap-4 rounded-2xl p-4 transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] group-hover:-translate-y-0.5 group-hover:shadow-[var(--shadow-glow-plum)]">
       <Avatar firstName={member.firstName} lastName={member.lastName} photo={member.photo} size={compact ? 44 : 56} />
       <div className="min-w-0 flex-1">
         <Link
@@ -40,6 +45,7 @@ export default function MemberCard({
           <Linkedin size={15} />
         </a>
       )}
+      </div>
     </div>
   );
 }

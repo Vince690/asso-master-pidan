@@ -19,7 +19,7 @@ const COLUMNS = [
   {
     title: "L'association",
     links: [
-      { href: "/membres", label: "La promotion" },
+      { href: "/#membres", label: "La promotion" },
       { href: "/association", label: "L'association" },
       { href: "/alumni", label: "Alumni" },
       { href: "/articles", label: "Articles" },
