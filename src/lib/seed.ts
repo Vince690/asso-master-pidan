@@ -151,7 +151,7 @@ const m = (
   firstName: string,
   lastName: string,
   promo: number,
-  pole: Member["pole"],
+  poles: Member["poles"],
   role: string | undefined,
   order: number,
   extra: Partial<Member> = {},
@@ -160,7 +160,7 @@ const m = (
   firstName,
   lastName,
   promo,
-  pole,
+  poles,
   role,
   order,
   linkedin: "https://www.linkedin.com/in/m2pidan/",
@@ -171,61 +171,61 @@ const m = (
 
 /** Promotion 2026-2027 (liste officielle). Les fonctions et les LinkedIn se renseignent depuis l'espace admin. */
 export const seedMembers: Member[] = [
-  m("dir", "Valérie-Laure", "Benabou", 2026, "direction", "Directrice du master", 0, {
+  m("dir", "Valérie-Laure", "Benabou", 2026, ["direction"], "Directrice du master", 0, {
     linkedin: "https://www.linkedin.com/in/val%C3%A9rie-laure-benabou-3702017/",
     bio: "Professeure agrégée de droit privé à l'Université Paris-Saclay (UVSQ), spécialiste du droit d'auteur et du droit du numérique. Elle a dirigé le laboratoire DANTE pendant huit ans et siège au Conseil supérieur de la propriété littéraire et artistique, dont elle est membre d'honneur et où elle a présidé plusieurs commissions. Avec Judith Rochfeld, elle a signé « À qui profite le clic ? », une enquête sur la valeur de nos données. Elle dirige le master et en assure la responsabilité pédagogique.",
   }),
-  m("p1", "Nabil", "Aliane", 2026, null, undefined, 1, { linkedin: "https://www.linkedin.com/in/nabil-aliane-6a2385184/" }),
-  m("p2", "Ritchy", "Alphonse", 2026, null, undefined, 2, { linkedin: "https://www.linkedin.com/in/ritchy-alphonse-268a57360/" }),
-  m("p3", "Sara", "Carino", 2026, null, undefined, 3, { linkedin: "https://www.linkedin.com/in/saracarino/" }),
-  m("p4", "Camille", "Charbonnier", 2026, null, undefined, 4, { linkedin: "https://www.linkedin.com/in/camille-charbonnier-945443326/" }),
-  m("p5", "Yanis", "Chrid", 2026, null, undefined, 5, { linkedin: "https://www.linkedin.com/in/yanis-chrid-a49869248/" }),
-  m("p6", "Joyce", "Djoujum", 2026, null, undefined, 6, { linkedin: "https://www.linkedin.com/in/joyce-djoujum-7497a6223/" }),
-  m("p7", "Ibrahim", "El Baghdadi", 2026, null, undefined, 7, { linkedin: "https://www.linkedin.com/in/ibrahim-el-baghdadi-733216328/" }),
-  m("p8", "Christiana", "Hadjicosta", 2026, null, undefined, 8, {
+  m("p1", "Nabil", "Aliane", 2026, ["communication"], undefined, 1, { linkedin: "https://www.linkedin.com/in/nabil-aliane-6a2385184/" }),
+  m("p2", "Ritchy", "Alphonse", 2026, ["veille-juridique"], undefined, 2, { linkedin: "https://www.linkedin.com/in/ritchy-alphonse-268a57360/" }),
+  m("p3", "Sara", "Carino", 2026, ["evenementiel"], undefined, 3, { linkedin: "https://www.linkedin.com/in/saracarino/" }),
+  m("p4", "Camille", "Charbonnier", 2026, ["bureau", "communication", "veille-juridique"], undefined, 4, { linkedin: "https://www.linkedin.com/in/camille-charbonnier-945443326/" }),
+  m("p5", "Yanis", "Chrid", 2026, ["bureau", "veille-juridique", "evenementiel"], undefined, 5, { linkedin: "https://www.linkedin.com/in/yanis-chrid-a49869248/" }),
+  m("p6", "Joyce", "Djoujum", 2026, ["bureau", "communication", "veille-juridique"], undefined, 6, { linkedin: "https://www.linkedin.com/in/joyce-djoujum-7497a6223/" }),
+  m("p7", "Ibrahim", "El Baghdadi", 2026, [], undefined, 7, { linkedin: "https://www.linkedin.com/in/ibrahim-el-baghdadi-733216328/" }),
+  m("p8", "Christiana", "Hadjicosta", 2026, ["veille-juridique"], undefined, 8, {
     linkedin: "https://www.linkedin.com/in/christiana-hadjicosta-26043b355/",
   }),
-  m("p9", "Mysha", "Hamzaoui", 2026, null, undefined, 9, { linkedin: "https://www.linkedin.com/in/mysha-elissa-hamzaoui-4664b2374/" }),
-  m("p10", "Yasmine", "Hannan", 2026, null, undefined, 10, { linkedin: "https://www.linkedin.com/in/yasmine-ghalia-hannan-193424268/" }),
-  m("p11", "Maïlysse", "Hauss", 2026, null, undefined, 11, { linkedin: "https://www.linkedin.com/in/ma%C3%AFlysse-hauss-a69333385/" }),
-  m("p12", "Margot", "Herridge", 2026, null, undefined, 12, { linkedin: "https://www.linkedin.com/in/margot-herridge-021a3b26a/" }),
-  m("p13", "Meng", "Ke", 2026, null, undefined, 13, { linkedin: "https://www.linkedin.com/in/meng-k-230024212/" }),
-  m("p14", "Vincent", "Legardien", 2026, "communication", "Responsable site & identité", 14, {
+  m("p9", "Mysha", "Hamzaoui", 2026, ["veille-juridique"], undefined, 9, { linkedin: "https://www.linkedin.com/in/mysha-elissa-hamzaoui-4664b2374/" }),
+  m("p10", "Yasmine", "Hannan", 2026, ["bureau", "veille-juridique", "evenementiel"], undefined, 10, { linkedin: "https://www.linkedin.com/in/yasmine-ghalia-hannan-193424268/" }),
+  m("p11", "Maïlysse", "Hauss", 2026, ["veille-juridique", "evenementiel"], undefined, 11, { linkedin: "https://www.linkedin.com/in/ma%C3%AFlysse-hauss-a69333385/" }),
+  m("p12", "Margot", "Herridge", 2026, ["evenementiel"], undefined, 12, { linkedin: "https://www.linkedin.com/in/margot-herridge-021a3b26a/" }),
+  m("p13", "Meng", "Ke", 2026, [], undefined, 13, { linkedin: "https://www.linkedin.com/in/meng-k-230024212/" }),
+  m("p14", "Vincent", "Legardien", 2026, ["communication"], "Responsable site & identité", 14, {
     email: "legardienvincent@gmail.com",
     linkedin: "https://www.linkedin.com/in/vincent-legardien/",
     bio: "A conçu et développé ce site. Pour toute évolution, correction ou question technique sur le site, c'est lui qu'il faut contacter.",
   }),
-  m("p15", "Aurélia", "Leguedey", 2026, null, undefined, 15, { linkedin: "https://www.linkedin.com/in/aur%C3%A9lia-leguedey-376536324/" }),
-  m("p16", "Sarah", "Lirzin", 2026, null, undefined, 16, { linkedin: undefined }),
-  m("p17", "Angéliqua", "Makambila", 2026, null, undefined, 17, { linkedin: "https://www.linkedin.com/in/ang%C3%A9liqua-m-7099092b5/" }),
-  m("p18", "Issam", "Matoub", 2026, null, undefined, 18, { linkedin: "https://www.linkedin.com/in/issam-matoub/" }),
-  m("p19", "Emily", "Moalic", 2026, null, undefined, 19, { linkedin: "https://www.linkedin.com/in/emily-moalic/" }),
-  m("p20", "Yusuke", "Morita", 2026, null, undefined, 20, { linkedin: "https://www.linkedin.com/in/yusuke-morita/" }),
-  m("p21", "Marion", "Ricquier", 2026, null, undefined, 21, { linkedin: "https://www.linkedin.com/in/marion-ricquier-533177178/" }),
-  m("p22", "Camessarde", "Rosier-Laforest", 2026, null, undefined, 22, { linkedin: undefined }),
-  m("p23", "Joséphine", "Vialle", 2026, null, undefined, 23, { linkedin: "https://www.linkedin.com/in/jos%C3%A9phine-vialle-195019303/" }),
+  m("p15", "Aurélia", "Leguedey", 2026, ["veille-juridique"], undefined, 15, { linkedin: "https://www.linkedin.com/in/aur%C3%A9lia-leguedey-376536324/" }),
+  m("p16", "Sarah", "Lirzin", 2026, [], undefined, 16, { linkedin: undefined }),
+  m("p17", "Angéliqua", "Makambila", 2026, ["bureau", "communication", "veille-juridique"], undefined, 17, { linkedin: "https://www.linkedin.com/in/ang%C3%A9liqua-m-7099092b5/" }),
+  m("p18", "Issam", "Matoub", 2026, ["veille-juridique"], undefined, 18, { linkedin: "https://www.linkedin.com/in/issam-matoub/" }),
+  m("p19", "Emily", "Moalic", 2026, ["communication"], undefined, 19, { linkedin: "https://www.linkedin.com/in/emily-moalic/" }),
+  m("p20", "Yusuke", "Morita", 2026, ["communication"], undefined, 20, { linkedin: "https://www.linkedin.com/in/yusuke-morita/" }),
+  m("p21", "Marion", "Ricquier", 2026, ["communication"], undefined, 21, { linkedin: "https://www.linkedin.com/in/marion-ricquier-533177178/" }),
+  m("p22", "Camessarde", "Rosier-Laforest", 2026, [], undefined, 22, { linkedin: undefined }),
+  m("p23", "Joséphine", "Vialle", 2026, ["veille-juridique", "evenementiel"], undefined, 23, { linkedin: "https://www.linkedin.com/in/jos%C3%A9phine-vialle-195019303/" }),
   // Alumni
-  m("al1", "Clara", "Dubois", 2025, null, undefined, 1, {
+  m("al1", "Clara", "Dubois", 2025, [], undefined, 1, {
     currentPosition: "Juriste droit du numérique",
     currentCompany: "Groupe de médias",
   }),
-  m("al2", "Rayan", "Belkacem", 2025, null, undefined, 2, { currentPosition: "Élève-avocat", currentCompany: "EFB", field: "avocat" }),
-  m("al3", "Alice", "Perrin", 2025, null, undefined, 3, {
+  m("al2", "Rayan", "Belkacem", 2025, [], undefined, 2, { currentPosition: "Élève-avocat", currentCompany: "EFB", field: "avocat" }),
+  m("al3", "Alice", "Perrin", 2025, [], undefined, 3, {
     currentPosition: "DPO junior",
     currentCompany: "Scale-up SaaS",
     field: "donnees-conformite",
   }),
-  m("al4", "Maxime", "Roy", 2024, null, undefined, 1, {
+  m("al4", "Maxime", "Roy", 2024, [], undefined, 1, {
     currentPosition: "Avocat collaborateur",
     currentCompany: "Cabinet d'affaires",
     field: "avocat",
   }),
-  m("al5", "Nour", "Chakir", 2024, null, undefined, 2, {
+  m("al5", "Nour", "Chakir", 2024, [], undefined, 2, {
     currentPosition: "Doctorante",
     currentCompany: "Laboratoire DANTE",
     field: "recherche-enseignement",
   }),
-  m("al6", "Julien", "Marchand", 2023, null, undefined, 1, {
+  m("al6", "Julien", "Marchand", 2023, [], undefined, 1, {
     currentPosition: "Legal counsel IP/IT",
     currentCompany: "Éditeur de logiciels",
   }),
@@ -237,7 +237,7 @@ export const seedPartners: Partner[] = [
     name: "Ashurst Perkins Coie",
     type: "cabinet",
     url: "https://www.ashurst.com",
-    via: "Un associé spécialiste du numérique enseigne au master",
+    via: "Maître Nicolas Quoy",
     description: "Cabinet d'affaires international. Deux cours de droit du numérique accueillis dans ses locaux parisiens.",
     order: 1,
   },

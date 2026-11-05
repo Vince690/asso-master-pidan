@@ -22,7 +22,7 @@ const KEY_POINTS = [
 ];
 
 export default async function MasterPage() {
-  const direction = (await getMembers()).find((m) => m.pole === "direction");
+  const direction = (await getMembers()).find((m) => m.poles.includes("direction"));
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Course",

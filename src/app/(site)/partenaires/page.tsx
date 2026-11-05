@@ -51,7 +51,10 @@ export default async function PartnersPage() {
                           {p.name.charAt(0)}
                         </span>
                       )}
-                      <h3 className="text-lg font-semibold tracking-tight text-fg">{p.name}</h3>
+                      <div className="min-w-0">
+                        <h3 className="text-lg font-semibold tracking-tight text-fg">{p.name}</h3>
+                        {p.via && <p className="text-sm text-fg-muted">{p.via}</p>}
+                      </div>
                     </div>
                     {p.url && (
                       <a
@@ -65,7 +68,6 @@ export default async function PartnersPage() {
                       </a>
                     )}
                   </div>
-                  {p.via && <p className="font-mono text-xs text-electric-300">{p.via}</p>}
                   {p.description && <p className="text-sm leading-relaxed text-fg-muted">{p.description}</p>}
                 </li>
               ))}

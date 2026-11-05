@@ -32,7 +32,7 @@ export default function Avatar({
         loading="lazy"
         className={cn(
           "shrink-0 rounded-full object-cover ring-1 ring-white/10",
-          tone === "mono" && "grayscale transition-[filter] duration-300 group-hover:grayscale-0",
+          tone === "mono" && "grayscale transition-[filter] duration-500 ease-[var(--ease-out-expo)] group-hover:grayscale-0",
           className,
         )}
         style={{ width: size, height: size }}

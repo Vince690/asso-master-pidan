@@ -44,8 +44,8 @@ async function List({ searchParams }: Pick<PageProps<"/admin/membres">, "searchP
   const { ok } = await searchParams;
   const store = await db();
   const [members, settings] = await Promise.all([store.members.list(), store.settings.get()]);
-  const direction = members.filter((m) => m.pole === "direction");
-  const students = members.filter((m) => m.pole !== "direction");
+  const direction = members.filter((m) => m.poles.includes("direction"));
+  const students = members.filter((m) => !m.poles.includes("direction"));
   const promos = [...new Set(students.map((m) => m.promo))].sort((a, b) => b - a);
   if (members.length === 0) return <Empty>Aucune personne enregistrée.</Empty>;
   return (
@@ -80,7 +80,7 @@ async function List({ searchParams }: Pick<PageProps<"/admin/membres">, "searchP
                     <li key={m.id}>
                       <Row
                         member={m}
-                        subtitle={[m.pole ? POLES[m.pole].label : null, m.role, m.currentPosition].filter(Boolean).join(" · ") || "—"}
+                        subtitle={[...m.poles.map((p) => POLES[p].label), m.role, m.currentPosition].filter(Boolean).join(" · ") || "—"}
                       />
                     </li>
                   ))}

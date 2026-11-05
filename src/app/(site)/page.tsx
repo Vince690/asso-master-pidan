@@ -67,9 +67,9 @@ export default async function HomePage() {
     getMembers(),
   ]);
   const [featured, ...rest] = articles;
-  const direction = members.find((m) => m.pole === "direction");
+  const direction = members.find((m) => m.poles.includes("direction"));
   const promo = members
-    .filter((m) => m.promo === settings.currentPromo && m.pole !== "direction")
+    .filter((m) => m.promo === settings.currentPromo && !m.poles.includes("direction"))
     .sort((a, b) => a.lastName.localeCompare(b.lastName, "fr") || a.firstName.localeCompare(b.firstName, "fr"));
   const alumniAll = members.filter((m) => m.promo < settings.currentPromo);
   const alumni = alumniAll.slice(0, 8);
@@ -259,16 +259,23 @@ export default async function HomePage() {
                   href={p.url ?? "/partenaires"}
                   target={p.url ? "_blank" : undefined}
                   rel={p.url ? "noreferrer" : undefined}
-                  className="glass inline-flex items-center rounded-full px-5 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+                  className="glass inline-flex h-full items-center rounded-full px-5 py-2.5 text-sm font-medium text-fg-muted transition-colors hover:text-fg"
                 >
-                  {p.name}
+                  {p.via ? (
+                    <span className="flex flex-col">
+                      <span>{p.name}</span>
+                      <span className="text-xs font-normal text-fg-dim">{p.via}</span>
+                    </span>
+                  ) : (
+                    p.name
+                  )}
                 </a>
               </li>
             ))}
             <li>
               <Link
                 href="/contact?sujet=partenariat"
-                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-electric-400/50 px-5 py-2.5 text-sm font-medium text-electric-300 transition-colors hover:border-electric-300 hover:bg-electric-500/10 hover:text-electric-200"
+                className="inline-flex h-full items-center gap-1.5 rounded-full border border-dashed border-electric-400/50 px-5 py-2.5 text-sm font-medium text-electric-300 transition-colors hover:border-electric-300 hover:bg-electric-500/10 hover:text-electric-200"
               >
                 <Plus size={14} /> Devenir partenaire
               </Link>

@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
-const inputClass =
+export const inputClass =
   "w-full rounded-xl border border-line bg-white/[0.04] px-3.5 py-2.5 text-[0.95rem] text-fg placeholder:text-fg-dim outline-none transition-[border-color,box-shadow] focus:border-line-strong";
 
 export function Field({ label, hint, children, className }: { label: string; hint?: string; children: ReactNode; className?: string }) {

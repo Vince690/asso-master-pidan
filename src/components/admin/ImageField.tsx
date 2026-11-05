@@ -1,17 +1,18 @@
 "use client";
 
-import { useRef, useState, type DragEvent } from "react";
-import { ImageIcon, Upload } from "lucide-react";
+import { useRef, useState, type DragEvent, type KeyboardEvent } from "react";
+import { ImageIcon, Upload, X } from "lucide-react";
 import { uploadImage } from "@/app/admin/actions";
 import { compressImage, IMAGE_ACCEPT, isImageFile, type Focus, type ImageKind } from "@/lib/image-client";
 import { cn } from "@/lib/utils";
 import AvatarCropper from "./AvatarCropper";
+import { inputClass } from "./Field";
 
 /**
- * Champ image : un bouton qui ouvre les fichiers, ou une image déposée sur la zone.
- * Tous les formats courants sont acceptés (JPEG, PNG, WebP, HEIC des iPhone…) ; l'image est
- * convertie et compressée dans le navigateur, et seule cette version légère est enregistrée.
- * Pour un portrait, on choisit d'abord où placer le visage dans le cercle.
+ * Champ image, de la taille et de la forme d'un champ de texte : un clic ouvre les fichiers,
+ * une image déposée dessus est prise directement. Tous les formats courants sont acceptés
+ * (JPEG, PNG, WebP, HEIC des iPhone…) ; l'image est convertie et compressée dans le navigateur,
+ * et seule cette version légère est enregistrée. Pour un portrait, on choisit d'abord le cadrage.
  */
 export default function ImageField({
   name,
@@ -19,12 +20,14 @@ export default function ImageField({
   kind,
   initialUrl,
   hint,
+  className,
 }: {
   name: string;
   label: string;
   kind: ImageKind;
   initialUrl?: string;
   hint?: string;
+  className?: string;
 }) {
   const [url, setUrl] = useState(initialUrl ?? "");
   const [busy, setBusy] = useState(false);
@@ -65,6 +68,17 @@ export default function ImageField({
     void send(file, focus);
   }
 
+  function open() {
+    if (!busy) input.current?.click();
+  }
+
+  function onKeyDown(e: KeyboardEvent) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      open();
+    }
+  }
+
   function onDrop(e: DragEvent) {
     e.preventDefault();
     setOver(false);
@@ -73,8 +87,10 @@ export default function ImageField({
     else setError("Déposez une image.");
   }
 
+  const text = busy ? "Conversion et envoi…" : url ? "Changer l'image" : "Sélectionner une image";
+
   return (
-    <div className="flex flex-col gap-1.5">
+    <div className={cn("flex flex-col gap-1.5", className)}>
       <span className="text-sm font-medium text-fg">{label}</span>
       <input type="hidden" name={name} value={url} />
       <input
@@ -82,9 +98,16 @@ export default function ImageField({
         type="file"
         accept={IMAGE_ACCEPT}
         className="hidden"
+        tabIndex={-1}
         onChange={(e) => e.target.files?.[0] && pick(e.target.files[0])}
       />
       <div
+        role="button"
+        tabIndex={0}
+        aria-label={`${text} (${label.toLowerCase()})`}
+        aria-busy={busy}
+        onClick={open}
+        onKeyDown={onKeyDown}
         onDragOver={(e) => {
           e.preventDefault();
           setOver(true);
@@ -92,65 +115,63 @@ export default function ImageField({
         onDragLeave={() => setOver(false)}
         onDrop={onDrop}
         className={cn(
-          "flex items-center gap-4 rounded-xl border bg-white/[0.04] p-3 transition-colors",
-          over ? "border-electric-400 bg-electric-500/10" : "border-line",
+          inputClass,
+          "flex cursor-pointer items-center gap-3 text-fg-muted hover:bg-white/[0.07] focus-visible:border-line-strong",
+          over && "border-electric-400 bg-electric-500/10 text-fg",
+          busy && "cursor-progress",
         )}
       >
-        {pending ? (
-          <AvatarCropper file={pending} onConfirm={confirmCrop} onCancel={() => setPending(null)} />
-        ) : (
-          <>
-        <Preview url={url} kind={kind} />
-        <div className="flex min-w-0 flex-col gap-1.5">
+        <Thumb url={url} kind={kind} />
+        <span className="min-w-0 flex-1 truncate">{text}</span>
+        {url && !busy ? (
           <button
             type="button"
-            disabled={busy}
-            onClick={() => input.current?.click()}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-sm font-medium text-fg transition-colors hover:bg-white/10 disabled:opacity-50"
+            aria-label="Retirer l'image"
+            onClick={(e) => {
+              e.stopPropagation();
+              setUrl("");
+            }}
+            className="-my-1 -mr-1.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-fg-dim transition-colors hover:bg-white/10 hover:text-fg"
           >
-            <Upload size={14} />
-            {busy ? "Conversion et envoi…" : url ? "Changer l'image" : "Sélectionner une image"}
+            <X size={14} />
           </button>
-          <p className="text-xs text-fg-dim">
-            Ou glissez-la ici. Tous formats, compressée automatiquement.
-            {url && (
-              <>
-                {" · "}
-                <button type="button" className="text-fg-muted hover:text-fg" onClick={() => setUrl("")}>
-                  Retirer
-                </button>
-              </>
-            )}
-          </p>
-        </div>
-          </>
+        ) : (
+          <Upload size={15} className="shrink-0 text-fg-dim" />
         )}
       </div>
+      {pending && (
+        <div className="rounded-xl border border-line bg-white/[0.04] p-3">
+          <AvatarCropper file={pending} onConfirm={confirmCrop} onCancel={() => setPending(null)} />
+        </div>
+      )}
       {changed && !busy && !pending && (
         <span className="text-xs text-electric-300">
           {url ? "Nouvelle image prête." : "Image retirée."} Enregistrez la fiche pour l'appliquer sur le site.
         </span>
       )}
-      {hint && <span className="text-xs text-fg-dim">{hint}</span>}
+      <span className="text-xs text-fg-dim">
+        {hint ? `${hint} ` : ""}Clic ou glisser-déposer, tous formats, compressée automatiquement.
+      </span>
       {error && <span className="text-xs text-red-300">{error}</span>}
     </div>
   );
 }
 
-function Preview({ url, kind }: { url: string; kind: ImageKind }) {
+/** Vignette de la hauteur d'une ligne de texte, pour que le champ garde la taille d'un champ classique. */
+function Thumb({ url, kind }: { url: string; kind: ImageKind }) {
   const shape = cn(
-    "shrink-0 overflow-hidden border border-line",
-    kind === "avatar" && "h-14 w-14 rounded-full",
-    kind === "logo" && "h-14 w-14 rounded-xl bg-white p-1",
-    kind === "illustration" && "aspect-video w-28 rounded-lg",
+    "shrink-0 overflow-hidden",
+    kind === "avatar" && "h-[1.425rem] w-[1.425rem] rounded-full",
+    kind === "logo" && "h-[1.425rem] w-[1.425rem] rounded-md",
+    kind === "illustration" && "h-[1.425rem] w-9 rounded-md",
   );
   if (!url) {
     return (
-      <span className={cn(shape, "inline-flex items-center justify-center border-dashed text-fg-dim", kind === "logo" && "bg-transparent")}>
-        <ImageIcon size={18} />
+      <span className={cn(shape, "inline-flex items-center justify-center border border-dashed border-line-strong text-fg-dim")}>
+        <ImageIcon size={11} />
       </span>
     );
   }
   // eslint-disable-next-line @next/next/no-img-element
-  return <img src={url} alt="" className={cn(shape, kind === "logo" ? "object-contain" : "object-cover")} />;
+  return <img src={url} alt="" className={cn(shape, kind === "logo" ? "bg-white object-contain p-px" : "object-cover")} />;
 }

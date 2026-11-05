@@ -43,9 +43,9 @@ export interface Article {
   seoDescription?: string;
 }
 
-export type Pole = "direction" | "bureau" | "communication" | "veille-juridique" | "evenementiel" | null;
+export type Pole = "direction" | "bureau" | "communication" | "veille-juridique" | "evenementiel";
 
-export const POLES: Record<Exclude<Pole, null>, { label: string; description: string }> = {
+export const POLES: Record<Pole, { label: string; description: string }> = {
   direction: { label: "Direction du master", description: "La responsable pédagogique du master." },
   bureau: { label: "Bureau", description: "Présidence, trésorerie et secrétariat de l'association." },
   communication: { label: "Pôle Communication", description: "LinkedIn, Instagram, site et identité visuelle." },
@@ -78,7 +78,8 @@ export interface Member {
   lastName: string;
   /** Année de début de la promo, ex. 2026 pour 2026-2027 */
   promo: number;
-  pole: Pole;
+  /** Pôles de l'association (une même personne peut en avoir plusieurs) ; vide pour un alumni */
+  poles: Pole[];
   /** Fonction précise : "Présidente", "Trésorier", "Responsable LinkedIn"… */
   role?: string;
   photo?: string;

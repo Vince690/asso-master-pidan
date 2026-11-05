@@ -1,7 +1,7 @@
 import "server-only";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { AppUser, Article, Member, Partner, SiteSettings } from "@/lib/types";
+import type { AppUser, Article, Member, Partner, Pole, SiteSettings } from "@/lib/types";
 import { seedArticles, seedMembers, seedPartners, seedSettings, seedUsers } from "@/lib/seed";
 import { filterArticles, sortMembers, type Store } from "./store";
 
@@ -36,7 +36,7 @@ async function load(): Promise<Snapshot> {
   }
   try {
     const raw = await fs.readFile(FILE, "utf8");
-    cache = JSON.parse(raw) as Snapshot;
+    cache = upgrade(JSON.parse(raw));
     cacheMtime = await fs.stat(FILE).then((s) => s.mtimeMs);
   } catch {
     cache = {
@@ -49,6 +49,15 @@ async function load(): Promise<Snapshot> {
     await persist(cache);
   }
   return cache;
+}
+
+/** Anciennes fiches (un seul champ `pole`) : converties en liste de pôles à la lecture. */
+function upgrade(raw: Snapshot & { members: (Member & { pole?: Pole | null })[] }): Snapshot {
+  for (const m of raw.members) {
+    if (!Array.isArray(m.poles)) m.poles = m.pole ? [m.pole] : [];
+    delete m.pole;
+  }
+  return raw;
 }
 
 async function persist(snapshot: Snapshot) {

@@ -23,6 +23,8 @@ export function isImageFile(file: File): boolean {
 export interface Focus {
   x: number;
   y: number;
+  /** Agrandissement : 1 = le plus grand carré possible, 2 = un carré deux fois plus petit (zoom avant) */
+  zoom?: number;
 }
 
 /** Décode une image en bitmap, HEIC compris. À fermer après usage. */
@@ -52,7 +54,8 @@ export async function compressImage(file: File, kind: ImageKind, focus: Focus = 
   const bitmap = await decode(file);
   const { width: w, height: h } = bitmap;
   // Zone source (recadrage carré pour les portraits, placé selon `focus`) et taille cible
-  const crop = preset.square ? Math.min(w, h) : 0;
+  const zoom = Math.max(1, focus.zoom ?? 1);
+  const crop = preset.square ? Math.min(w, h) / zoom : 0;
   const sx = preset.square ? (w - crop) * focus.x : 0;
   const sy = preset.square ? (h - crop) * focus.y : 0;
   const sw = preset.square ? crop : w;

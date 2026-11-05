@@ -45,8 +45,8 @@ export async function getMembers() {
   const store = await db();
   const [members, settings] = await Promise.all([store.members.list(), store.settings.get()]);
   return members.map((m) => {
-    if (m.pole === "direction" || m.promo >= settings.currentPromo) return m;
-    return { ...m, pole: null, role: undefined };
+    if (m.poles.includes("direction") || m.promo >= settings.currentPromo) return m;
+    return { ...m, poles: [], role: undefined };
   });
 }
 

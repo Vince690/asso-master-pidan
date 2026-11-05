@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { ArrowUpRight, FileText, Handshake, Users } from "lucide-react";
 import { requireUser } from "@/lib/auth/guard";
 import { db } from "@/lib/db";
+import type { Pole } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { LinkButton } from "@/components/ui/Button";
 import { AdminHeader, Badge, Notice, Panel, Skeleton } from "@/components/admin/Shell";
@@ -26,14 +27,14 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
     store.partners.list(),
   ]);
   const drafts = articles.filter((a) => a.status === "draft");
-  const promo = members.filter((m) => m.promo === settings.currentPromo && m.pole !== "direction");
-  const alumni = members.filter((m) => m.promo < settings.currentPromo && m.pole !== "direction");
+  const promo = members.filter((m) => m.promo === settings.currentPromo && !m.poles.includes("direction"));
+  const alumni = members.filter((m) => m.promo < settings.currentPromo && !m.poles.includes("direction"));
   const todo = [
     { label: "Étudiants sans LinkedIn", count: promo.filter((m) => !m.linkedin).length, href: "/admin/membres" },
     { label: "Étudiants sans photo", count: promo.filter((m) => !m.photo).length, href: "/admin/membres" },
     {
       label: "Pôles sans responsable",
-      count: ["bureau", "communication", "veille-juridique", "evenementiel"].filter((p) => !promo.some((m) => m.pole === p)).length,
+      count: ["bureau", "communication", "veille-juridique", "evenementiel"].filter((p) => !promo.some((m) => m.poles.includes(p as Pole))).length,
       href: "/admin/membres",
     },
     { label: "Alumni sans poste renseigné", count: alumni.filter((m) => !m.currentPosition).length, href: "/admin/membres" },

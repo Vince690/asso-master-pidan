@@ -27,7 +27,7 @@ export default function PartnerForm({ partner, title, nextOrder = 1 }: { partner
       <Field label="Site web" className="sm:col-span-2">
         <Input id="url" name="url" type="url" defaultValue={partner?.url} placeholder="https://…" />
       </Field>
-      <Field label="Représenté par" hint="Facultatif : la personne qui porte le lien (ex. : Maître X, associé)." className="sm:col-span-2">
+      <Field label="Représenté par" hint="Facultatif : la personne qui porte le lien, affichée sous le nom (ex. : Maître X)." className="sm:col-span-2">
         <Input id="via" name="via" defaultValue={partner?.via} />
       </Field>
       <Field label="Position" hint="1 s'affiche en premier. Rempli automatiquement.">

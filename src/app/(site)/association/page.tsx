@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function AssociationPage() {
   const [members, settings] = await Promise.all([getMembers(), getSettings()]);
   const promo = members.filter((m) => m.promo === settings.currentPromo);
-  const byPole = (pole: Pole) => promo.filter((m) => m.pole === pole);
+  const byPole = (pole: Pole) => promo.filter((m) => m.poles.includes(pole));
 
   return (
     <>
@@ -24,7 +24,7 @@ export default async function AssociationPage() {
         title="L'association du master."
         lead="Tenue chaque année par la promotion en cours. Un bureau et trois pôles : communication, veille juridique, événementiel."
       />
-      {(Object.keys(POLES) as Exclude<Pole, null>[])
+      {(Object.keys(POLES) as Pole[])
         .filter((key) => key !== "direction")
         .map((key) => {
           const list = byPole(key);

@@ -7,7 +7,7 @@ import { db } from "@/lib/db";
 import { TAGS } from "@/lib/data";
 import { createSession, destroySession, getSession } from "@/lib/auth/session";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
-import { ALUMNI_FIELDS, ARTICLE_CATEGORIES, POLES, type Article, type Member, type Partner } from "@/lib/types";
+import { ALUMNI_FIELDS, ARTICLE_CATEGORIES, POLES, type Article, type Member, type Partner, type Pole } from "@/lib/types";
 import { newId, readingMinutes, seoDescriptionFrom, seoTitleFrom, slugify, stripHtml } from "@/lib/utils";
 import { createHash } from "node:crypto";
 import { COVER_STYLES } from "@/components/ui/Cover";
@@ -178,7 +178,7 @@ const memberSchema = z.object({
   firstName: z.string().trim().min(1, "Prénom manquant.").max(80),
   lastName: z.string().trim().min(1, "Nom manquant.").max(80),
   promo: z.coerce.number().int().min(2000).max(2100),
-  pole: z.enum(["", ...Object.keys(POLES)] as ["", ...string[]]),
+  poles: z.array(z.enum(Object.keys(POLES) as [Pole, ...Pole[]])).max(5),
   role: z.string().trim().max(120).optional(),
   photo: imageRef,
   linkedin: z.string().trim().url().optional().or(z.literal("")),
@@ -191,7 +191,7 @@ const memberSchema = z.object({
 
 export async function saveMember(_prev: ActionState, formData: FormData): Promise<ActionState> {
   await requireSession();
-  const parsed = memberSchema.safeParse(Object.fromEntries(formData.entries()));
+  const parsed = memberSchema.safeParse({ ...Object.fromEntries(formData.entries()), poles: formData.getAll("poles") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Formulaire invalide." };
   const d = parsed.data;
   const store = await db();
@@ -202,7 +202,7 @@ export async function saveMember(_prev: ActionState, formData: FormData): Promis
     firstName: d.firstName,
     lastName: d.lastName,
     promo: d.promo,
-    pole: (d.pole || null) as Member["pole"],
+    poles: [...new Set(d.poles)],
     role: d.role || undefined,
     photo: d.photo || undefined,
     linkedin: d.linkedin || undefined,

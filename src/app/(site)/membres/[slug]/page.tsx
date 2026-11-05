@@ -60,7 +60,7 @@ async function Sheet({ params }: Pick<PageProps<"/membres/[slug]">, "params">) {
         <div className="min-w-0">
           <p className="eyebrow">
             {alumni ? `Alumni · promotion ${promoLabel(member.promo)}` : `Promotion ${promoLabel(member.promo)}`}
-            {member.pole ? ` · ${POLES[member.pole].label}` : ""}
+            {member.poles.map((p) => ` · ${POLES[p].label}`).join("")}
           </p>
           <h1 className="display mt-3 text-[2.2rem] max-sm:text-[1.9rem] md:text-[3rem]">{name}</h1>
           {(member.role || member.currentPosition) && (
