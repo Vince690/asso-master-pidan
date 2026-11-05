@@ -9,6 +9,7 @@ import { createSession, destroySession, getSession } from "@/lib/auth/session";
 import { isFirebaseConfigured } from "@/lib/firebase/config";
 import { ALUMNI_FIELDS, ARTICLE_CATEGORIES, POLES, type Article, type Member, type Partner } from "@/lib/types";
 import { newId, readingMinutes, seoDescriptionFrom, seoTitleFrom, slugify, stripHtml } from "@/lib/utils";
+import { createHash } from "node:crypto";
 import { COVER_STYLES } from "@/components/ui/Cover";
 
 export interface ActionState {
@@ -30,6 +31,36 @@ async function requireAdminSession() {
 
 function fail(e: unknown): ActionState {
   return { error: e instanceof Error ? e.message : "Une erreur est survenue." };
+}
+
+/** Adresse d'image : soit une image stockée ici (`/i/<id>`), soit une adresse https. */
+const imageRef = z
+  .string()
+  .trim()
+  .refine((v) => v === "" || /^\/i\/[a-f0-9]{24}$/.test(v) || /^https?:\/\/\S+$/.test(v), "L'adresse de l'image est invalide.")
+  .optional()
+  .or(z.literal(""));
+
+/* ---------------- Images ---------------- */
+
+const IMAGE_TYPES = new Set(["image/webp", "image/jpeg", "image/png"]);
+/** Les images arrivent déjà compressées par le navigateur ; au-delà, c'est qu'il s'est passé quelque chose d'anormal. */
+const IMAGE_MAX_BYTES = 600 * 1024;
+
+/** Reçoit une image compressée par le navigateur, la stocke et renvoie son adresse. */
+export async function uploadImage(formData: FormData): Promise<{ url: string } | { error: string }> {
+  await requireSession();
+  const file = formData.get("file");
+  if (!(file instanceof File)) return { error: "Aucun fichier reçu." };
+  if (!IMAGE_TYPES.has(file.type)) return { error: "Format non pris en charge." };
+  if (file.size > IMAGE_MAX_BYTES) return { error: "Image trop lourde après compression (600 Ko maximum)." };
+  const bytes = Buffer.from(await file.arrayBuffer());
+  const id = createHash("sha256").update(bytes).digest("hex").slice(0, 24);
+  const store = await db();
+  if (!(await store.images.get(id))) {
+    await store.images.put({ id, type: file.type, data: bytes.toString("base64"), createdAt: new Date().toISOString() });
+  }
+  return { url: `/i/${id}` };
 }
 
 /* ---------------- Authentification ---------------- */
@@ -69,7 +100,7 @@ const articleSchema = z.object({
   content: z.string().min(1, "L'article est vide."),
   category: z.enum(Object.keys(ARTICLE_CATEGORIES) as [keyof typeof ARTICLE_CATEGORIES]),
   tags: z.string().optional(),
-  coverImage: z.string().trim().url("L'adresse de l'image est invalide.").optional().or(z.literal("")),
+  coverImage: imageRef,
   status: z.enum(["draft", "published"]),
   seoTitle: z.string().trim().max(70).optional(),
   seoDescription: z.string().trim().max(170).optional(),
@@ -149,7 +180,7 @@ const memberSchema = z.object({
   promo: z.coerce.number().int().min(2000).max(2100),
   pole: z.enum(["", ...Object.keys(POLES)] as ["", ...string[]]),
   role: z.string().trim().max(120).optional(),
-  photo: z.string().trim().url().optional().or(z.literal("")),
+  photo: imageRef,
   linkedin: z.string().trim().url().optional().or(z.literal("")),
   email: z.string().trim().email("Email invalide.").optional().or(z.literal("")),
   bio: z.string().trim().max(400).optional(),
@@ -205,7 +236,7 @@ const partnerSchema = z.object({
   type: z.enum(["cabinet", "entreprise", "institution", "intervenant", "association"]),
   via: z.string().trim().max(160).optional(),
   url: z.string().trim().url("Adresse invalide.").optional().or(z.literal("")),
-  logo: z.string().trim().url().optional().or(z.literal("")),
+  logo: imageRef,
   description: z.string().trim().max(400).optional(),
   order: z.coerce.number().int().min(0).max(999).default(1),
 });

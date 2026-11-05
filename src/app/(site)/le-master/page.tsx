@@ -44,7 +44,7 @@ export default async function MasterPage() {
         eyebrow={`${MASTER.mention} · RNCP ${MASTER.rncp}`}
         title={
           <>
-            Propriété intellectuelle <span className="text-fg-muted">et droit des affaires numériques.</span>
+            <span className="text-fg-muted">Propriété intellectuelle et</span> droit des affaires numériques.
           </>
         }
         lead="Un Master 2 de l'Université Paris-Saclay, enseigné à la faculté de droit de l'UVSQ, qui forme des juristes capables de lire les technologies avec les outils normatifs les plus récents."

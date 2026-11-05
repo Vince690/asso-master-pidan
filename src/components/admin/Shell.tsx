@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 
 export function AdminHeader({ title, lead, actions }: { title: string; lead?: string; actions?: ReactNode }) {
   return (
-    <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div className="mb-8 flex flex-wrap items-end justify-between gap-4 max-md:mb-5">
       <div>
-        <h1 className="text-[1.75rem] font-semibold tracking-tight text-fg">{title}</h1>
-        {lead && <p className="mt-1 text-sm text-fg-muted">{lead}</p>}
+        <h1 className="text-[1.75rem] font-semibold tracking-tight text-fg max-md:text-2xl">{title}</h1>
+        {lead && <p className="mt-1 text-sm text-fg-muted max-md:hidden">{lead}</p>}
       </div>
       {actions && <div className="flex gap-2">{actions}</div>}
     </div>

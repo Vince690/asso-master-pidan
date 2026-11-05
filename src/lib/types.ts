@@ -118,6 +118,17 @@ export interface Partner {
   order: number;
 }
 
+/** Image envoyée depuis l'espace membres, compressée côté navigateur et servie sur `/i/<id>`. */
+export interface StoredImage {
+  /** Empreinte du contenu : la même image envoyée deux fois n'est stockée qu'une fois */
+  id: string;
+  /** image/webp, image/jpeg ou image/png */
+  type: string;
+  /** Contenu en base64 */
+  data: string;
+  createdAt: string;
+}
+
 export type UserRole = "admin" | "member";
 
 export interface AppUser {

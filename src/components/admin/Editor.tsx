@@ -5,7 +5,9 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Quote, Link2, ImageIcon, Minus, Undo2, Redo2, Code } from "lucide-react";
-import { useCallback, useEffect, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { uploadImage } from "@/app/admin/actions";
+import { compressImage } from "@/lib/image-client";
 import { cn } from "@/lib/utils";
 
 /**
@@ -44,6 +46,8 @@ export default function Editor({
   onTextChange?: (text: string) => void;
 }) {
   const [html, setHtml] = useState(initialHtml);
+  const [uploading, setUploading] = useState<string | null>(null);
+  const fileInput = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -78,11 +82,27 @@ export default function Editor({
     editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   }, [editor]);
 
-  const addImage = useCallback(() => {
-    if (!editor) return;
-    const url = window.prompt("Adresse de l'image (https://…)");
-    if (url) editor.chain().focus().setImage({ src: url }).run();
-  }, [editor]);
+  /** Image : choisie sur l'appareil, compressée dans le navigateur, stockée avec le site, insérée à la position du curseur. */
+  const addImage = useCallback(
+    async (file: File) => {
+      if (!editor) return;
+      setUploading("Envoi de l'image…");
+      try {
+        const body = new FormData();
+        body.append("file", await compressImage(file, "illustration"));
+        const res = await uploadImage(body);
+        if ("error" in res) throw new Error(res.error);
+        editor.chain().focus().setImage({ src: res.url }).run();
+        setUploading(null);
+      } catch (e) {
+        setUploading(e instanceof Error ? e.message : "Envoi impossible.");
+        setTimeout(() => setUploading(null), 4000);
+      } finally {
+        if (fileInput.current) fileInput.current.value = "";
+      }
+    },
+    [editor],
+  );
 
   if (!editor) {
     return <div className="glass min-h-96 animate-pulse rounded-2xl" />;
@@ -134,9 +154,16 @@ export default function Editor({
         <Tool label="Lien" active={editor.isActive("link")} onClick={setLink}>
           <Link2 size={15} />
         </Tool>
-        <Tool label="Image" onClick={addImage}>
+        <Tool label="Image" onClick={() => fileInput.current?.click()}>
           <ImageIcon size={15} />
         </Tool>
+        <input
+          ref={fileInput}
+          type="file"
+          accept="image/*"
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && addImage(e.target.files[0])}
+        />
         <Tool label="Séparateur" onClick={() => editor.chain().focus().setHorizontalRule().run()}>
           <Minus size={15} />
         </Tool>
@@ -147,6 +174,7 @@ export default function Editor({
         <Tool label="Rétablir" onClick={() => editor.chain().focus().redo().run()}>
           <Redo2 size={15} />
         </Tool>
+        {uploading && <span className="ml-2 text-xs text-fg-muted">{uploading}</span>}
       </div>
       <div className="px-6 pb-8">
         <EditorContent editor={editor} />

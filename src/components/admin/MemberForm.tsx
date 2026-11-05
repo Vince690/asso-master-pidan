@@ -45,8 +45,9 @@ export default function MemberForm({ member, defaultPromo }: { member?: Member; 
         <ImageField
           name="photo"
           label="Photo"
+          kind="avatar"
           initialUrl={member?.photo}
-          hint="Facultatif : sans photo, des initiales colorées s'affichent."
+          hint="Facultatif : sans photo, des initiales colorées s'affichent. Le portrait est recadré en carré."
         />
       </div>
       <Field label="Bio courte" className="sm:col-span-2">

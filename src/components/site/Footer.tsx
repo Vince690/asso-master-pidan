@@ -12,7 +12,7 @@ const COLUMNS = [
     title: "Découvrir",
     links: [
       { href: "/le-master", label: "Le master" },
-      { href: "/le-master#programme", label: "Programme" },
+      { href: "/articles", label: "Articles" },
       { href: "/partenaires", label: "Partenaires" },
     ],
   },
@@ -22,7 +22,6 @@ const COLUMNS = [
       { href: "/#membres", label: "La promotion" },
       { href: "/association", label: "L'association" },
       { href: "/alumni", label: "Alumni" },
-      { href: "/articles", label: "Articles" },
       { href: "/#contact", label: "Contact" },
     ],
   },
@@ -31,10 +30,11 @@ const COLUMNS = [
 /** Auteur du site : fiche membre accessible depuis le crédit en bas de page. */
 export const SITE_AUTHOR = { name: "Vincent Legardien", slug: "vincent-legardien" };
 
+/** Année courante à l'heure de Paris, rafraîchie toutes les heures : le © change tout seul au 1er janvier. */
 async function getYear() {
   "use cache";
-  cacheLife("days");
-  return new Date().getFullYear();
+  cacheLife("hours");
+  return new Intl.DateTimeFormat("fr-FR", { timeZone: "Europe/Paris", year: "numeric" }).format(new Date());
 }
 
 export default async function Footer({ settings }: { settings: SiteSettings }) {

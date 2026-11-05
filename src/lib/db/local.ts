@@ -21,6 +21,8 @@ interface Snapshot {
 
 const DIR = path.join(process.cwd(), ".local-data");
 const FILE = path.join(DIR, "db.json");
+const IMAGES = path.join(DIR, "images");
+const EXT: Record<string, string> = { "image/webp": "webp", "image/jpeg": "jpg", "image/png": "png" };
 
 let cache: Snapshot | null = null;
 let writing: Promise<void> = Promise.resolve();
@@ -93,5 +95,23 @@ export const localStore: Store = {
   settings: {
     get: async () => (await load()).settings,
     set: (settings) => mutate((s) => void (s.settings = settings)),
+  },
+  images: {
+    get: async (id) => {
+      for (const [type, ext] of Object.entries(EXT)) {
+        try {
+          const buf = await fs.readFile(path.join(IMAGES, `${id}.${ext}`));
+          const { birthtime } = await fs.stat(path.join(IMAGES, `${id}.${ext}`));
+          return { id, type, data: buf.toString("base64"), createdAt: birthtime.toISOString() };
+        } catch {
+          /* essai suivant */
+        }
+      }
+      return null;
+    },
+    put: async (image) => {
+      await fs.mkdir(IMAGES, { recursive: true });
+      await fs.writeFile(path.join(IMAGES, `${image.id}.${EXT[image.type] ?? "bin"}`), Buffer.from(image.data, "base64"));
+    },
   },
 };

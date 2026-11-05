@@ -1,4 +1,4 @@
-import type { AppUser, Article, Member, Partner, SiteSettings } from "@/lib/types";
+import type { AppUser, Article, Member, Partner, SiteSettings, StoredImage } from "@/lib/types";
 
 export interface ArticleQuery {
   status?: Article["status"];
@@ -39,6 +39,10 @@ export interface Store {
   settings: {
     get(): Promise<SiteSettings>;
     set(settings: SiteSettings): Promise<void>;
+  };
+  images: {
+    get(id: string): Promise<StoredImage | null>;
+    put(image: StoredImage): Promise<void>;
   };
 }
 

@@ -1,12 +1,12 @@
 import "server-only";
-import type { AppUser, Article, Member, Partner, SiteSettings } from "@/lib/types";
+import type { AppUser, Article, Member, Partner, SiteSettings, StoredImage } from "@/lib/types";
 import { seedSettings } from "@/lib/seed";
 import { getAdminDb } from "@/lib/firebase/admin";
 import { filterArticles, sortMembers, type Store } from "./store";
 
 /**
  * Store Firestore (SDK admin, côté serveur uniquement).
- * Collections : articles, members, partners, users (id = email), settings/site, messages.
+ * Collections : articles, members, partners, users (id = email), settings/site, images.
  */
 
 function col<T>(name: string) {
@@ -60,5 +60,9 @@ export const firestoreStore: Store = {
   settings: {
     get: async () => (await col<SiteSettings>("settings").one("site")) ?? seedSettings,
     set: (s) => col<SiteSettings>("settings").set("site", s),
+  },
+  images: {
+    get: (id) => col<StoredImage>("images").one(id),
+    put: (image) => col<StoredImage>("images").set(image.id, image),
   },
 };

@@ -1,16 +1,17 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Mail, Plus } from "lucide-react";
 import { Instagram, Linkedin } from "@/components/ui/Icons";
 import { getMembers, getPartners, getPublishedArticles, getSettings } from "@/lib/data";
 import { CURRICULUM, MASTER } from "@/lib/master";
 import { SITE_DESCRIPTION, SITE_URL } from "@/lib/site";
-import { promoLabel } from "@/lib/utils";
+import { cn, promoLabel } from "@/lib/utils";
 import { ALUMNI_FIELDS, type AlumniField } from "@/lib/types";
 import { buttonClass, LinkButton } from "@/components/ui/Button";
 import { Section, SectionHeading } from "@/components/ui/Section";
 import ArticleCard from "@/components/site/ArticleCard";
 import { MemberList } from "@/components/site/MemberCard";
 import DirectorTile from "@/components/site/DirectorTile";
+import SwipeRow from "@/components/site/SwipeRow";
 import MailComposer from "@/components/site/MailComposer";
 
 /** Les cinq grands thèmes du master, avec trois cours représentatifs chacun (titres tirés de la maquette). */
@@ -150,16 +151,20 @@ export default async function HomePage() {
           />
           <MoreLink href="/le-master">Maquette complète</MoreLink>
         </div>
-        <div className="grid gap-4 max-md:gap-3 md:grid-cols-6">
+        {/* Mobile : une carte à la fois, à faire glisser. Grand écran : la grille. */}
+        <SwipeRow
+          count={THEMES.length}
+          className="grid gap-4 max-md:-mx-5 max-md:flex max-md:snap-x max-md:snap-mandatory max-md:gap-3 max-md:overflow-x-auto max-md:scroll-px-5 max-md:px-5 max-md:no-scrollbar md:grid-cols-6"
+        >
           {THEMES.map((t) => (
-            <div key={t.title} className={t.span}>
+            <div key={t.title} className={cn(t.span, "max-md:w-[78vw] max-md:max-w-xs max-md:shrink-0 max-md:snap-start")}>
               <div className="glass glass-edge flex h-full flex-col gap-3 rounded-3xl p-6 max-md:gap-2 max-md:rounded-2xl max-md:p-5">
                 <h3 className="text-xl font-semibold tracking-tight text-fg max-md:text-lg">{t.title}</h3>
                 <p className="text-sm leading-relaxed text-fg-muted">{t.text}</p>
-                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4 max-md:hidden">
+                <ul className="mt-auto flex flex-col gap-1.5 border-t border-line pt-4">
                   {t.codes.map((code) => (
-                    <li key={code} className="grid grid-cols-[3.6rem_1fr] items-baseline gap-3 text-[0.82rem] text-fg-muted">
-                      <span className="font-mono text-[0.68rem] text-fg-dim">{code}</span>
+                    <li key={code} className="grid grid-cols-[3.6rem_1fr] items-baseline gap-3 text-[0.82rem] text-fg-muted max-md:grid-cols-1">
+                      <span className="font-mono text-[0.68rem] text-fg-dim max-md:hidden">{code}</span>
                       <span className="line-clamp-1">{courseTitle(code)}</span>
                     </li>
                   ))}
@@ -167,12 +172,12 @@ export default async function HomePage() {
               </div>
             </div>
           ))}
-          {direction && (
-            <div className="md:col-span-6">
-              <DirectorTile member={direction} variant="band" />
-            </div>
-          )}
-        </div>
+        </SwipeRow>
+        {direction && (
+          <div className="mt-4 max-md:mt-5">
+            <DirectorTile member={direction} variant="band" />
+          </div>
+        )}
       </Section>
 
       {/* ---- Articles ---- */}
@@ -245,7 +250,7 @@ export default async function HomePage() {
         <Section id="partenaires">
           <div className="mb-6 flex flex-wrap items-end justify-between gap-6">
             <SectionHeading className="mb-0" eyebrow="Partenaires" title="Ils nous accueillent, nous forment, nous accréditent." />
-            <MoreLink href="/contact?sujet=partenariat">Devenir partenaire</MoreLink>
+            <MoreLink href="/partenaires">Tous les partenaires</MoreLink>
           </div>
           <ul className="flex flex-wrap gap-3">
             {partners.map((p) => (
@@ -260,6 +265,14 @@ export default async function HomePage() {
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href="/contact?sujet=partenariat"
+                className="inline-flex items-center gap-1.5 rounded-full border border-dashed border-electric-400/50 px-5 py-2.5 text-sm font-medium text-electric-300 transition-colors hover:border-electric-300 hover:bg-electric-500/10 hover:text-electric-200"
+              >
+                <Plus size={14} /> Devenir partenaire
+              </Link>
+            </li>
           </ul>
         </Section>
       )}

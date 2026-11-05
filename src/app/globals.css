@@ -300,6 +300,13 @@ body {
   }
 }
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility animate-pop {
   animation: pop 0.16s var(--ease-out-expo) both;
 }

@@ -28,7 +28,7 @@ Les noms des membres de démonstration sont fictifs : remplacez-les depuis l'adm
 2. **Compte de service** : Paramètres du projet → Comptes de service → Générer une clé privée. Copiez le JSON dans `FIREBASE_SERVICE_ACCOUNT` (en une ligne ou en base64).
 3. **Config client** : Paramètres du projet → Vos applications → ajoutez une app web et reportez les valeurs `NEXT_PUBLIC_FIREBASE_*`.
 4. **Premier administrateur** : dans Firestore, créez un document `users/{votre email en minuscules}` avec `{ email, displayName, role: "admin", invitedAt: "<date ISO>" }`. Ensuite, tout se gère depuis l'admin (page Accès).
-5. **Images** (facultatif) : un compte Cloudinary gratuit avec un *upload preset* non signé permet d'envoyer des images depuis l'admin. Sans cela, on colle une adresse d'image.
+5. **Images** : les photos, logos et illustrations d'articles sont choisis depuis l'appareil dans l'espace membres, compressés dans le navigateur (WebP, quelques dizaines de Ko) et stockés avec le reste des données, sans service tiers. Ils sont servis sur `/i/<empreinte>`.
 6. **Vercel** : importez le dépôt, renseignez les variables de `.env.example` (dont `AUTH_SECRET` et `NEXT_PUBLIC_SITE_URL`), déployez. Le plan Hobby suffit.
 
 ## Organisation du code

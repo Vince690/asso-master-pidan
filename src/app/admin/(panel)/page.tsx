@@ -40,28 +40,44 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
     { label: "Alumni sans métier (filtre annuaire)", count: alumni.filter((m) => !m.field).length, href: "/admin/membres" },
     { label: "Brouillons en attente", count: drafts.length, href: "/admin/articles" },
   ].filter((t) => t.count > 0);
+  const stats = [
+    {
+      icon: FileText,
+      label: "Articles publiés",
+      short: "articles",
+      value: articles.length - drafts.length,
+      href: "/admin/articles",
+      extra: drafts.length ? `${drafts.length} brouillon${drafts.length > 1 ? "s" : ""}` : null,
+    },
+    { icon: Users, label: "Membres et alumni", short: "membres", value: members.length, href: "/admin/membres", extra: null },
+    { icon: Handshake, label: "Partenaires", short: "partenaires", value: partners.length, href: "/admin/partenaires", extra: null },
+  ];
 
   return (
     <>
       <AdminHeader
         title={`Bonjour ${user.displayName.split(" ")[0]}`}
         lead="Tout ce qui est publié ici apparaît immédiatement sur le site."
-        actions={<LinkButton href="/admin/articles/nouveau">Écrire un article</LinkButton>}
+        actions={
+          <LinkButton href="/admin/articles/nouveau" className="max-md:hidden">
+            Écrire un article
+          </LinkButton>
+        }
       />
       <Notice error={erreur === "admin" ? "Cette page est réservée aux administrateurs." : null} />
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        {[
-          {
-            icon: FileText,
-            label: "Articles publiés",
-            value: articles.length - drafts.length,
-            href: "/admin/articles",
-            extra: drafts.length ? `${drafts.length} brouillon${drafts.length > 1 ? "s" : ""}` : null,
-          },
-          { icon: Users, label: "Membres et alumni", value: members.length, href: "/admin/membres", extra: null },
-          { icon: Handshake, label: "Partenaires", value: partners.length, href: "/admin/partenaires", extra: null },
-        ].map((s) => (
+      {/* Mobile : les trois compteurs dans une seule pilule */}
+      <div className="glass glass-edge grid grid-cols-3 divide-x divide-line rounded-2xl md:hidden">
+        {stats.map((s) => (
+          <Link key={s.label} href={s.href} className="flex flex-col items-center gap-0.5 px-2 py-3.5 text-center">
+            <span className="text-2xl font-semibold tracking-tight text-fg tabular-nums">{s.value}</span>
+            <span className="text-[0.7rem] text-fg-muted">{s.short}</span>
+          </Link>
+        ))}
+      </div>
+
+      <div className="grid gap-4 max-md:hidden sm:grid-cols-3">
+        {stats.map((s) => (
           <Link
             key={s.label}
             href={s.href}
@@ -80,13 +96,18 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
         ))}
       </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-2">
-        <Panel className="p-5">
-          <div className="mb-4 flex items-center justify-between">
+      <div className="mt-8 grid gap-6 max-md:mt-4 lg:grid-cols-2">
+        <Panel className="min-w-0 p-5">
+          <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="font-semibold text-fg">Derniers articles</h2>
-            <Link href="/admin/articles" className="text-xs text-fg-muted hover:text-fg">
-              Tout voir
-            </Link>
+            <div className="flex items-center gap-3">
+              <Link href="/admin/articles" className="text-xs text-fg-muted hover:text-fg">
+                Tout voir
+              </Link>
+              <LinkButton href="/admin/articles/nouveau" size="sm" className="md:hidden">
+                Écrire
+              </LinkButton>
+            </div>
           </div>
           <ul className="divide-y divide-line">
             {articles.slice(0, 6).map((a) => (
@@ -104,7 +125,7 @@ async function Dashboard({ searchParams }: Pick<PageProps<"/admin">, "searchPara
             ))}
           </ul>
         </Panel>
-        <Panel className="p-5">
+        <Panel className="p-5 max-md:hidden">
           <h2 className="mb-1 font-semibold text-fg">À compléter</h2>
           <p className="mb-4 text-xs text-fg-dim">Ce qui manque pour que le site soit à jour. La liste se vide toute seule.</p>
           {todo.length === 0 ? (
