@@ -19,6 +19,18 @@ export function isImageFile(file: File): boolean {
   return file.type.startsWith("image/") || /\.(heic|heif)$/i.test(file.name);
 }
 
+/** Position du recadrage carré dans l'image, de 0 (bord haut ou gauche) à 1 (bord bas ou droit). */
+export interface Focus {
+  x: number;
+  y: number;
+}
+
+/** Décode une image en bitmap, HEIC compris. À fermer après usage. */
+export async function decodeImage(file: File): Promise<ImageBitmap> {
+  if (!isImageFile(file)) throw new Error("Ce fichier n'est pas une image.");
+  return decode(file);
+}
+
 async function decode(file: File): Promise<ImageBitmap> {
   try {
     return await createImageBitmap(file, { imageOrientation: "from-image" });
@@ -34,15 +46,15 @@ async function decode(file: File): Promise<ImageBitmap> {
   }
 }
 
-export async function compressImage(file: File, kind: ImageKind): Promise<File> {
+export async function compressImage(file: File, kind: ImageKind, focus: Focus = { x: 0.5, y: 0.5 }): Promise<File> {
   if (!isImageFile(file)) throw new Error("Ce fichier n'est pas une image.");
   const preset = PRESETS[kind];
   const bitmap = await decode(file);
   const { width: w, height: h } = bitmap;
-  // Zone source (recadrage carré centré pour les portraits) et taille cible
+  // Zone source (recadrage carré pour les portraits, placé selon `focus`) et taille cible
   const crop = preset.square ? Math.min(w, h) : 0;
-  const sx = preset.square ? (w - crop) / 2 : 0;
-  const sy = preset.square ? (h - crop) / 2 : 0;
+  const sx = preset.square ? (w - crop) * focus.x : 0;
+  const sy = preset.square ? (h - crop) * focus.y : 0;
   const sw = preset.square ? crop : w;
   const sh = preset.square ? crop : h;
   const scale = Math.min(1, preset.side / Math.max(sw, sh));

@@ -51,7 +51,7 @@ export default function MemberForm({ member, defaultPromo }: { member?: Member; 
         />
       </div>
       <Field label="Bio courte" className="sm:col-span-2">
-        <Textarea id="bio" name="bio" rows={2} maxLength={400} defaultValue={member?.bio} />
+        <Textarea id="bio" name="bio" rows={3} maxLength={1200} defaultValue={member?.bio} />
       </Field>
       <Field label="Poste actuel (alumni)">
         <Input id="currentPosition" name="currentPosition" defaultValue={member?.currentPosition} placeholder="Juriste IP/IT" />

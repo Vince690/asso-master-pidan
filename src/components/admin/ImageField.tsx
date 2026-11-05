@@ -3,13 +3,15 @@
 import { useRef, useState, type DragEvent } from "react";
 import { ImageIcon, Upload } from "lucide-react";
 import { uploadImage } from "@/app/admin/actions";
-import { compressImage, IMAGE_ACCEPT, isImageFile, type ImageKind } from "@/lib/image-client";
+import { compressImage, IMAGE_ACCEPT, isImageFile, type Focus, type ImageKind } from "@/lib/image-client";
 import { cn } from "@/lib/utils";
+import AvatarCropper from "./AvatarCropper";
 
 /**
  * Champ image : un bouton qui ouvre les fichiers, ou une image déposée sur la zone.
  * Tous les formats courants sont acceptés (JPEG, PNG, WebP, HEIC des iPhone…) ; l'image est
  * convertie et compressée dans le navigateur, et seule cette version légère est enregistrée.
+ * Pour un portrait, on choisit d'abord où placer le visage dans le cercle.
  */
 export default function ImageField({
   name,
@@ -28,13 +30,20 @@ export default function ImageField({
   const [busy, setBusy] = useState(false);
   const [over, setOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [pending, setPending] = useState<File | null>(null);
   const input = useRef<HTMLInputElement>(null);
 
-  async function pick(file: File) {
+  function pick(file: File) {
+    setError(null);
+    if (kind === "avatar") setPending(file);
+    else void send(file);
+  }
+
+  async function send(file: File, focus?: Focus) {
     setBusy(true);
     setError(null);
     try {
-      const compressed = await compressImage(file, kind);
+      const compressed = await compressImage(file, kind, focus);
       const body = new FormData();
       body.append("file", compressed);
       const res = await uploadImage(body);
@@ -46,6 +55,13 @@ export default function ImageField({
       setBusy(false);
       if (input.current) input.current.value = "";
     }
+  }
+
+  function confirmCrop(focus: Focus) {
+    if (!pending) return;
+    const file = pending;
+    setPending(null);
+    void send(file, focus);
   }
 
   function onDrop(e: DragEvent) {
@@ -79,6 +95,10 @@ export default function ImageField({
           over ? "border-electric-400 bg-electric-500/10" : "border-line",
         )}
       >
+        {pending ? (
+          <AvatarCropper file={pending} onConfirm={confirmCrop} onCancel={() => setPending(null)} />
+        ) : (
+          <>
         <Preview url={url} kind={kind} />
         <div className="flex min-w-0 flex-col gap-1.5">
           <button
@@ -102,6 +122,8 @@ export default function ImageField({
             )}
           </p>
         </div>
+          </>
+        )}
       </div>
       {hint && <span className="text-xs text-fg-dim">{hint}</span>}
       {error && <span className="text-xs text-red-300">{error}</span>}

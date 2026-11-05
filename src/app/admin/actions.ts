@@ -183,7 +183,7 @@ const memberSchema = z.object({
   photo: imageRef,
   linkedin: z.string().trim().url().optional().or(z.literal("")),
   email: z.string().trim().email("Email invalide.").optional().or(z.literal("")),
-  bio: z.string().trim().max(400).optional(),
+  bio: z.string().trim().max(1200, "La bio est limitée à 1 200 caractères.").optional(),
   currentPosition: z.string().trim().max(120).optional(),
   currentCompany: z.string().trim().max(120).optional(),
   field: z.enum(["", ...Object.keys(ALUMNI_FIELDS)] as ["", ...string[]]).optional(),
