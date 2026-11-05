@@ -34,7 +34,7 @@ export default async function AssociationPage() {
               {list.length === 0 ? (
                 <p className="text-sm text-fg-dim">Responsables à venir.</p>
               ) : (
-                <MemberList members={list} gridClassName="gap-3 sm:grid-cols-2 lg:grid-cols-3" compact={false} />
+                <MemberList members={list} gridClassName="gap-3 sm:grid-cols-2 lg:grid-cols-3" />
               )}
             </Section>
           );

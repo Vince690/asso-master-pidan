@@ -69,13 +69,19 @@ export function AdminMobileBar({ account }: { account?: ReactNode }) {
   const isActive = useActive();
   const [open, setOpen] = useState(false);
 
+  // Menu ouvert : la page ne défile plus. Fenêtre élargie jusqu'à la mise en page de bureau
+  // (où ce menu est masqué) : il est refermé pour rendre le défilement.
   useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
     if (!open) return;
+    document.documentElement.style.overflow = "hidden";
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onChange = () => desktop.matches && setOpen(false);
     window.addEventListener("keydown", onKey);
+    desktop.addEventListener("change", onChange);
     return () => {
       window.removeEventListener("keydown", onKey);
+      desktop.removeEventListener("change", onChange);
       document.documentElement.style.overflow = "";
     };
   }, [open]);

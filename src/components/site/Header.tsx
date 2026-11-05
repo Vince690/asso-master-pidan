@@ -67,9 +67,16 @@ export default function Header() {
     return () => io.disconnect();
   }, [onHome]);
 
+  // Menu ouvert : la page ne défile plus. Si la fenêtre s'élargit jusqu'à la mise en page
+  // de bureau, le menu (masqué à partir de md) est refermé pour rendre le défilement.
   useEffect(() => {
-    document.documentElement.style.overflow = open ? "hidden" : "";
+    if (!open) return;
+    document.documentElement.style.overflow = "hidden";
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const onChange = () => desktop.matches && setOpenPath(null);
+    desktop.addEventListener("change", onChange);
     return () => {
+      desktop.removeEventListener("change", onChange);
       document.documentElement.style.overflow = "";
     };
   }, [open]);
