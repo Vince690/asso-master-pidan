@@ -32,6 +32,7 @@ export default function ImageField({
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState<File | null>(null);
   const input = useRef<HTMLInputElement>(null);
+  const changed = url !== (initialUrl ?? "");
 
   function pick(file: File) {
     setError(null);
@@ -125,6 +126,11 @@ export default function ImageField({
           </>
         )}
       </div>
+      {changed && !busy && !pending && (
+        <span className="text-xs text-electric-300">
+          {url ? "Nouvelle image prête." : "Image retirée."} Enregistrez la fiche pour l'appliquer sur le site.
+        </span>
+      )}
       {hint && <span className="text-xs text-fg-dim">{hint}</span>}
       {error && <span className="text-xs text-red-300">{error}</span>}
     </div>

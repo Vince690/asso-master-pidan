@@ -25,13 +25,19 @@ const IMAGES = path.join(DIR, "images");
 const EXT: Record<string, string> = { "image/webp": "webp", "image/jpeg": "jpg", "image/png": "png" };
 
 let cache: Snapshot | null = null;
+let cacheMtime = 0;
 let writing: Promise<void> = Promise.resolve();
 
+/** Le fichier est relu dès qu'il a changé sur le disque : chaque instance du module voit les écritures des autres. */
 async function load(): Promise<Snapshot> {
-  if (cache) return cache;
+  if (cache) {
+    const mtime = await fs.stat(FILE).then((s) => s.mtimeMs).catch(() => 0);
+    if (mtime === cacheMtime) return cache;
+  }
   try {
     const raw = await fs.readFile(FILE, "utf8");
     cache = JSON.parse(raw) as Snapshot;
+    cacheMtime = await fs.stat(FILE).then((s) => s.mtimeMs);
   } catch {
     cache = {
       articles: seedArticles,
@@ -50,6 +56,7 @@ async function persist(snapshot: Snapshot) {
   writing = writing.then(async () => {
     await fs.mkdir(DIR, { recursive: true });
     await fs.writeFile(FILE, JSON.stringify(snapshot, null, 2), "utf8");
+    cacheMtime = await fs.stat(FILE).then((s) => s.mtimeMs);
   });
   await writing;
 }
