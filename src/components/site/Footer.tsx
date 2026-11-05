@@ -7,24 +7,15 @@ import type { SiteSettings } from "@/lib/types";
 import Logo from "./Logo";
 import SmartLink from "./SmartLink";
 
-const COLUMNS = [
-  {
-    title: "Découvrir",
-    links: [
-      { href: "/le-master", label: "Le master" },
-      { href: "/articles", label: "Articles" },
-      { href: "/partenaires", label: "Partenaires" },
-    ],
-  },
-  {
-    title: "L'association",
-    links: [
-      { href: "/#membres", label: "La promotion" },
-      { href: "/association", label: "L'association" },
-      { href: "/alumni", label: "Alumni" },
-      { href: "/#contact", label: "Contact" },
-    ],
-  },
+/** Une seule colonne de liens, du master vers les gens puis vers l'extérieur. */
+const LINKS = [
+  { href: "/le-master", label: "Le master" },
+  { href: "/#membres", label: "La promotion" },
+  { href: "/association", label: "L'association" },
+  { href: "/alumni", label: "Alumni" },
+  { href: "/articles", label: "Articles" },
+  { href: "/partenaires", label: "Partenaires" },
+  { href: "/#contact", label: "Contact" },
 ];
 
 /** Auteur du site : fiche membre accessible depuis le crédit en bas de page. */
@@ -42,7 +33,7 @@ export default async function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className="container-site relative z-10 mt-16 pb-8 max-md:mt-8 max-md:pb-5">
       <div className="glass glass-edge rounded-[2rem] px-6 py-10 max-md:rounded-3xl max-md:px-5 max-md:py-8 md:px-10 md:py-12">
-        <div className="grid gap-10 max-md:grid-cols-2 max-md:gap-8 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-10 max-md:grid-cols-2 max-md:gap-8 md:grid-cols-[1.4fr_1fr_1.2fr]">
           <div className="flex flex-col gap-5 max-md:col-span-2">
             <Logo markSize={34} />
             <p className="max-w-xs text-sm leading-relaxed text-fg-muted">
@@ -70,20 +61,18 @@ export default async function Footer({ settings }: { settings: SiteSettings }) {
             </div>
           </div>
 
-          {COLUMNS.map((col) => (
-            <div key={col.title}>
-              <h3 className="mb-3 text-sm font-semibold text-fg">{col.title}</h3>
-              <ul className="flex flex-col gap-0.5">
-                {col.links.map((l) => (
-                  <li key={l.href}>
-                    <SmartLink href={l.href} className="link-pill text-sm text-fg-muted">
-                      {l.label}
-                    </SmartLink>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <div className="max-md:col-span-2">
+            <h3 className="mb-3 text-sm font-semibold text-fg">Découvrir</h3>
+            <ul className="flex flex-col gap-0.5 max-md:grid max-md:grid-cols-2 max-md:gap-x-4">
+              {LINKS.map((l) => (
+                <li key={l.href}>
+                  <SmartLink href={l.href} className="link-pill text-sm text-fg-muted">
+                    {l.label}
+                  </SmartLink>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           <div className="max-md:col-span-2">
             <div className="mb-3 flex items-center gap-3">

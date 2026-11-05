@@ -7,7 +7,7 @@ import Placeholder from "@tiptap/extension-placeholder";
 import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Quote, Link2, ImageIcon, Minus, Undo2, Redo2, Code } from "lucide-react";
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { uploadImage } from "@/app/admin/actions";
-import { compressImage } from "@/lib/image-client";
+import { compressImage, IMAGE_ACCEPT, isImageFile } from "@/lib/image-client";
 import { cn } from "@/lib/utils";
 
 /**
@@ -48,6 +48,8 @@ export default function Editor({
   const [html, setHtml] = useState(initialHtml);
   const [uploading, setUploading] = useState<string | null>(null);
   const fileInput = useRef<HTMLInputElement>(null);
+  // L'éditeur est créé avant addImage : les gestionnaires de dépôt passent par cette référence
+  const addImageRef = useRef<(file: File) => void>(() => {});
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -59,7 +61,24 @@ export default function Editor({
       Placeholder.configure({ placeholder: placeholder ?? "Commencez à écrire votre article…" }),
     ],
     content: initialHtml,
-    editorProps: { attributes: { class: "prose-pidan tiptap max-w-none" } },
+    editorProps: {
+      attributes: { class: "prose-pidan tiptap max-w-none" },
+      // Une image déposée ou collée dans le texte est envoyée comme avec le bouton Image
+      handleDrop: (_view, event) => {
+        const file = Array.from(event.dataTransfer?.files ?? []).find(isImageFile);
+        if (!file) return false;
+        event.preventDefault();
+        addImageRef.current(file);
+        return true;
+      },
+      handlePaste: (_view, event) => {
+        const file = Array.from(event.clipboardData?.files ?? []).find(isImageFile);
+        if (!file) return false;
+        event.preventDefault();
+        addImageRef.current(file);
+        return true;
+      },
+    },
     onUpdate: ({ editor }) => {
       setHtml(editor.getHTML());
       onTextChange?.(editor.getText());
@@ -103,6 +122,10 @@ export default function Editor({
     },
     [editor],
   );
+
+  useEffect(() => {
+    addImageRef.current = addImage;
+  }, [addImage]);
 
   if (!editor) {
     return <div className="glass min-h-96 animate-pulse rounded-2xl" />;
@@ -160,7 +183,7 @@ export default function Editor({
         <input
           ref={fileInput}
           type="file"
-          accept="image/*"
+          accept={IMAGE_ACCEPT}
           className="hidden"
           onChange={(e) => e.target.files?.[0] && addImage(e.target.files[0])}
         />

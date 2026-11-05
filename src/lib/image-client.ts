@@ -1,6 +1,7 @@
 /**
- * Compression d'image dans le navigateur, avant envoi : redimensionnée, recadrée si demandé,
- * encodée en WebP. Un portrait ou un logo pèse quelques dizaines de Ko, une illustration
+ * Compression d'image dans le navigateur, avant envoi : décodée (HEIC des iPhone compris),
+ * redimensionnée, recadrée si demandé, encodée en WebP. Seule cette version compressée part
+ * vers le serveur : un portrait ou un logo pèse quelques dizaines de Ko, une illustration
  * d'article une centaine, et reste net sur un écran haute densité.
  */
 export type ImageKind = "avatar" | "logo" | "illustration";
@@ -11,14 +12,32 @@ const PRESETS: Record<ImageKind, { side: number; square: boolean; quality: numbe
   illustration: { side: 1600, square: false, quality: 0.82 },
 };
 
-export async function compressImage(file: File, kind: ImageKind): Promise<File> {
-  const preset = PRESETS[kind];
-  let bitmap: ImageBitmap;
+/** Types et extensions acceptés par les champs de fichier. */
+export const IMAGE_ACCEPT = "image/*,.heic,.heif";
+
+export function isImageFile(file: File): boolean {
+  return file.type.startsWith("image/") || /\.(heic|heif)$/i.test(file.name);
+}
+
+async function decode(file: File): Promise<ImageBitmap> {
   try {
-    bitmap = await createImageBitmap(file, { imageOrientation: "from-image" });
+    return await createImageBitmap(file, { imageOrientation: "from-image" });
   } catch {
+    // HEIC/HEIF : Safari les lit nativement, les autres navigateurs passent par un décodeur chargé à la demande
+    if (/image\/hei[cf]/.test(file.type) || /\.(heic|heif)$/i.test(file.name)) {
+      const { default: heic2any } = await import("heic2any");
+      const out = await heic2any({ blob: file, toType: "image/jpeg", quality: 0.95 });
+      const blob = Array.isArray(out) ? out[0] : out;
+      return createImageBitmap(blob);
+    }
     throw new Error("Image illisible. Essayez en JPEG ou PNG.");
   }
+}
+
+export async function compressImage(file: File, kind: ImageKind): Promise<File> {
+  if (!isImageFile(file)) throw new Error("Ce fichier n'est pas une image.");
+  const preset = PRESETS[kind];
+  const bitmap = await decode(file);
   const { width: w, height: h } = bitmap;
   // Zone source (recadrage carré centré pour les portraits) et taille cible
   const crop = preset.square ? Math.min(w, h) : 0;

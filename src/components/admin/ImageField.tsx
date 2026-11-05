@@ -1,16 +1,15 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { ImageIcon } from "lucide-react";
+import { useRef, useState, type DragEvent } from "react";
+import { ImageIcon, Upload } from "lucide-react";
 import { uploadImage } from "@/app/admin/actions";
-import { compressImage, type ImageKind } from "@/lib/image-client";
+import { compressImage, IMAGE_ACCEPT, isImageFile, type ImageKind } from "@/lib/image-client";
 import { cn } from "@/lib/utils";
-import { Input } from "./Field";
 
 /**
- * Champ image : on choisit un fichier sur l'ordinateur ou le téléphone, il est compressé
- * dans le navigateur (portrait recadré en carré, logo et illustration réduits) puis stocké
- * avec le reste des données. Coller une adresse https reste possible, replié.
+ * Champ image : un bouton qui ouvre les fichiers, ou une image déposée sur la zone.
+ * Tous les formats courants sont acceptés (JPEG, PNG, WebP, HEIC des iPhone…) ; l'image est
+ * convertie et compressée dans le navigateur, et seule cette version légère est enregistrée.
  */
 export default function ImageField({
   name,
@@ -27,8 +26,8 @@ export default function ImageField({
 }) {
   const [url, setUrl] = useState(initialUrl ?? "");
   const [busy, setBusy] = useState(false);
+  const [over, setOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pasting, setPasting] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
   async function pick(file: File) {
@@ -41,13 +40,20 @@ export default function ImageField({
       const res = await uploadImage(body);
       if ("error" in res) throw new Error(res.error);
       setUrl(res.url);
-      setPasting(false);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Envoi impossible.");
     } finally {
       setBusy(false);
       if (input.current) input.current.value = "";
     }
+  }
+
+  function onDrop(e: DragEvent) {
+    e.preventDefault();
+    setOver(false);
+    const file = Array.from(e.dataTransfer.files).find(isImageFile);
+    if (file) pick(file);
+    else setError("Déposez une image.");
   }
 
   return (
@@ -57,23 +63,35 @@ export default function ImageField({
       <input
         ref={input}
         type="file"
-        accept="image/*"
+        accept={IMAGE_ACCEPT}
         className="hidden"
         onChange={(e) => e.target.files?.[0] && pick(e.target.files[0])}
       />
-      <div className="flex items-center gap-4 rounded-xl border border-line bg-white/[0.04] p-3">
+      <div
+        onDragOver={(e) => {
+          e.preventDefault();
+          setOver(true);
+        }}
+        onDragLeave={() => setOver(false)}
+        onDrop={onDrop}
+        className={cn(
+          "flex items-center gap-4 rounded-xl border bg-white/[0.04] p-3 transition-colors",
+          over ? "border-electric-400 bg-electric-500/10" : "border-line",
+        )}
+      >
         <Preview url={url} kind={kind} />
         <div className="flex min-w-0 flex-col gap-1.5">
           <button
             type="button"
             disabled={busy}
             onClick={() => input.current?.click()}
-            className="inline-flex w-fit items-center rounded-full border border-line px-3.5 py-1.5 text-sm font-medium text-fg transition-colors hover:bg-white/10 disabled:opacity-50"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-line px-3.5 py-1.5 text-sm font-medium text-fg transition-colors hover:bg-white/10 disabled:opacity-50"
           >
-            {busy ? "Compression et envoi…" : url ? "Changer l'image" : "Choisir une image"}
+            <Upload size={14} />
+            {busy ? "Conversion et envoi…" : url ? "Changer l'image" : "Sélectionner une image"}
           </button>
           <p className="text-xs text-fg-dim">
-            JPEG, PNG ou WebP, compressée automatiquement.
+            Ou glissez-la ici. Tous formats, compressée automatiquement.
             {url && (
               <>
                 {" · "}
@@ -82,27 +100,9 @@ export default function ImageField({
                 </button>
               </>
             )}
-            {!pasting && (
-              <>
-                {" · "}
-                <button type="button" className="text-fg-muted hover:text-fg" onClick={() => setPasting(true)}>
-                  Coller une adresse
-                </button>
-              </>
-            )}
           </p>
         </div>
       </div>
-      {pasting && (
-        <Input
-          id={name}
-          type="url"
-          value={url.startsWith("/i/") ? "" : url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="https://…"
-          autoFocus
-        />
-      )}
       {hint && <span className="text-xs text-fg-dim">{hint}</span>}
       {error && <span className="text-xs text-red-300">{error}</span>}
     </div>

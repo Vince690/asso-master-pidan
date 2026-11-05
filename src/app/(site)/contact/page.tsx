@@ -23,15 +23,16 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
         lead="Partenariat, intervention, annuaire alumni ou simple question : un email suffit."
       />
       <Section className="pt-0 md:pt-0">
-        <div className="grid gap-10 md:grid-cols-[1fr_1.4fr] md:gap-16">
-          <aside className="flex flex-col gap-8">
+        <div className="grid gap-10 max-md:gap-6 md:grid-cols-[1fr_1.4fr] md:gap-16">
+          {/* Mobile : le formulaire passe en premier, les coordonnées suivent dans un panneau compact */}
+          <aside className="flex flex-col gap-8 max-md:order-2 max-md:gap-6 max-md:rounded-3xl max-md:border max-md:border-line max-md:p-5">
             <div>
               <p className="eyebrow mb-3">Par email</p>
               <a
                 href={`mailto:${settings.contactEmail}`}
-                className="inline-flex items-center gap-2 text-lg font-medium text-fg hover:text-electric-300"
+                className="inline-flex items-center gap-2 text-lg font-medium break-all text-fg hover:text-electric-300 max-sm:text-base"
               >
-                <Mail size={18} /> {settings.contactEmail}
+                <Mail size={18} className="shrink-0" /> {settings.contactEmail}
               </a>
             </div>
             <div>
@@ -66,8 +67,10 @@ export default async function ContactPage({ searchParams }: PageProps<"/contact"
               </p>
             </div>
           </aside>
-          <Suspense fallback={<div className="glass h-[32rem] animate-pulse rounded-3xl" />}>
-            <FormWithSubject searchParams={searchParams} to={settings.contactEmail} />
+          <Suspense fallback={<div className="glass h-[32rem] animate-pulse rounded-3xl max-md:order-1" />}>
+            <div className="min-w-0 max-md:order-1">
+              <FormWithSubject searchParams={searchParams} to={settings.contactEmail} />
+            </div>
           </Suspense>
         </div>
       </Section>
